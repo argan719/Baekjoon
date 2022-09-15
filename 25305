@@ -1,0 +1,24 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+bool compare(int i, int j){
+    return (i > j);
+}
+
+int main(void)
+{
+    vector<int> arr;
+    int n, k;
+    int val;
+    
+    scanf("%d %d", &n, &k);
+    for(int i=0; i<n; i++){
+        scanf("%d", &val);
+        arr.push_back(val);
+    }
+    sort(arr.begin(), arr.end(), compare);
+    
+    printf("%d", arr[k-1]);
+}
