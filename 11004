@@ -1,0 +1,19 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<stdio.h>
+using namespace std;
+
+int main(void)
+{
+	int n, k, tmp;
+	vector<int> list;
+	scanf("%d %d", &n, &k);
+
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &tmp);
+		list.push_back(tmp);
+	}
+	sort(list.begin(), list.end());
+	printf("%d", list[k - 1]);  // 정렬 후 k번째 수 출력
+}
