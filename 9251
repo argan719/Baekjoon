@@ -1,0 +1,62 @@
+// Longest Common Subsequence
+// LCS(Longest Common Subsequence, 최장 공통 부분 수열)
+
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <algorithm>
+#define SIZE 1000
+using namespace std;
+
+int map[SIZE + 1][SIZE + 1] = {
+    -1,
+};
+
+//		   A C A Y K P (x)
+//		0  0 0 0 0 0 0
+//  C   0
+//  A   0
+//  P   0
+//  C   0
+//  A   0
+//  K   0
+// (y)
+
+int main(void)
+{
+    string x, y;
+    cin >> x;
+    cin >> y;
+
+    int i, j;
+    for (j = 0; j <= y.length(); j++) // 0행 0으로 채우기
+        map[0][j] = 0;
+
+    for (i = 0; i <= x.length(); i++) // 0열 0으로 채우기
+        map[i][0] = 0;
+
+    for (i = 1; i <= x.length(); i++)
+    {
+        for (j = 1; j <= y.length(); j++)
+        {
+            if (x[i - 1] == y[j - 1])
+                map[i][j] = map[i - 1][j - 1] + 1;
+            else
+            {
+                map[i][j] = max(map[i - 1][j], map[i][j - 1]);
+            }
+        }
+    }
+
+    /*
+    // LCS 연산 후 map 출력
+    printf("\n == map == \n");
+    for (i = 0; i <= x.length(); i++) {
+        for (j = 0; j <= y.length(); j++) {
+            printf("%3d", map[i][j]);
+        }
+        printf("\n");
+    }*/
+
+    printf("%d", map[x.length()][y.length()]); // 최종결과 출력 - map에서 map[SIZE][SIZE] 값이 최종 LCS 결과
+}
