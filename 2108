@@ -1,0 +1,51 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<cmath> // 반올림
+#define MAX 8001
+using namespace std;
+
+int main(void) {
+	int n, i;
+	int v;
+
+	vector<int> mode;  // 최빈값 위한 벡터
+	int cnt[MAX] = { 0, };    // -4000 -> 0 4000 -> 8000
+
+	scanf("%d", &n);
+	vector<int> arr;
+
+	double sum = 0;
+	int max = -4000;
+	int cnt_max = 0;
+
+	// 정수 입력받기
+	for (i = 0; i < n; i++) {
+		scanf("%d", &v);
+		arr.push_back(v);
+		sum += v;
+		cnt[v + 4000]++;
+		if (cnt_max < cnt[v + 4000]) cnt_max = cnt[v + 4000];  // 최빈 횟수(몇 번 나와야 최빈값이냐?)
+		if (max < v) max = v;
+	}
+	sort(arr.begin(), arr.end());  // 정렬
+
+	double aver = sum / n;  // 산술평균 구하기
+	int range = *(arr.end() - 1) - *(arr.begin());   // 범위 구하기 
+
+	// 최빈값 구하기
+	for (i = 0; i <= max+4000; i++) {  // 시간 단축을 위해 8000까지 돌지 않고 최댓값 구한다음 그 값까지만 돌도록
+		if (cnt_max == cnt[i]) mode.push_back(i - 4000);
+	}
+
+
+	printf("%.0f\n", floor(aver + 0.5));  // 산술평균 출력
+	printf("%d\n", arr[n/2]);   // 중앙값 출력
+
+	sort(mode.begin(), mode.end());  // 정렬
+	// 최빈값 출력
+	if (mode.size() == 1) printf("%d\n",*(mode.begin()));
+	else printf("%d\n", mode.at(1));
+
+	printf("%d\n", abs(range));    // 범위 출력
+}
