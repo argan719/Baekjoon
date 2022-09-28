@@ -1,0 +1,34 @@
+#include<iostream>
+#define SIZE 501
+#define MAX 2147483647  // (2^31 - 1) + 1
+using namespace std;
+
+int n;
+int matrix[SIZE];
+int main(void) {
+	cin >> n;
+	int x, y;
+	for (int i = 0; i < n; i++) {
+		cin >> x;
+		cin >> y;
+		matrix[i] = x;
+		matrix[i + 1] = y;
+	}
+	int l, i, j, k;
+	int q;
+	int field[SIZE][SIZE] = {MAX,};
+
+	for (l = 1; l < n; l++) {  
+		for (i = 1, j = l + 1; j <= n; i++, j++) {
+			field[i][j] = MAX;
+			for (k = i; k < j; k++) {
+				if (i == j) field[i][j] = 0;
+				else {
+					q = field[i][k] + field[k + 1][j] + matrix[i - 1] * matrix[k] * matrix[j];
+					if (q < field[i][j]) field[i][j] = q;
+				}
+			}
+		}
+	}
+	cout <<  field[1][n];   
+}
