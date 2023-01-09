@@ -1,0 +1,25 @@
+#include<iostream>
+using namespace std;
+
+int main(void)
+{
+	int tot = 0;
+	int tmp;
+	int n;
+	cin >> n;
+	
+	if (n < 3) cout << -1;
+	else {
+		tot = n / 5;
+		while (tot >= 0) {
+			tmp = n - 5 * tot;
+			
+			if (tmp % 3 == 0) {
+				tot += tmp / 3;
+				cout << tot; return 0;
+			}
+			tot--;
+		}
+		cout << -1;
+	}
+}
