@@ -1,0 +1,28 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int main(void) {
+	ios::sync_with_stdio(false);
+
+	int n;
+	cin >> n;
+	vector<int> rope;
+	int val;
+
+	for (int i = 0; i < n; i++) {
+		cin >> val;
+		rope.push_back(val);
+	}
+
+	sort(rope.rbegin(), rope.rend());
+
+	int max = rope[0];
+
+	for (int i = 1; i < n; i++) {
+		if ((i + 1)*rope[i] > max) max = (i + 1)*rope[i];
+	}
+
+	cout << max;
+}
