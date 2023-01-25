@@ -1,0 +1,36 @@
+#include<iostream>
+#include<vector>
+#define MAX 100001
+using namespace std;
+
+int score[MAX];
+
+int main(void) {
+	ios::sync_with_stdio(false);
+
+
+	int testcase;
+	int n;
+	int x, y;  // 1차점수, 2차점수
+	int t;
+	int max;
+	cin >> testcase;
+	for (int i = 0; i < testcase; i++) {
+		t = 0;
+		cin >> n;
+		for (int i = 0; i < n; i++) {
+			cin >> x >> y;
+			score[x] = y;
+		}
+		max = score[1];
+		t++;
+		for (int i = 2; i <= n; i++) {
+			if (max > score[i]) {
+				max = score[i];
+				t++;
+			}
+		}
+		cout << t << endl;
+	}
+
+}
