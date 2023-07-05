@@ -1,0 +1,25 @@
+#include<iostream>
+#include<algorithm>
+using namespace std;
+int d[5001];
+
+int dp(int k) {
+	if (k <= 0) return 5000;
+	if (d[k] != 0) return d[k];
+
+	return d[k] = min(dp(k - 3) + 1, dp(k - 5) + 1);
+}
+
+int main()
+{
+	int n;
+	cin >> n;  // 전체 무게 입력받기
+
+	d[3] = d[5] = 1;
+	for (int i = 1; i <= n; i++) {    // i=6부터 돌릴라했는데 4입력시 -1 나와야 하는데 0나와서 걍 1부터 돌림.
+		dp(i);
+	}
+
+	if (d[n] >= 5000) cout << -1;
+	else cout << d[n];
+}
