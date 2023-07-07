@@ -1,0 +1,31 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int test_case[41];
+int fibo[41];
+
+int fibo_dp(int n) {
+	if (n == 0) return 0;
+	if (n == 1) return 1;
+	
+	if (fibo[n] == 0) fibo[n] = fibo_dp(n - 1) + fibo_dp(n - 2);
+	return fibo[n];
+}
+
+
+int main()
+{
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		cin >> test_case[i];
+	}
+	for (int i = 0; i < n; i++) {
+		if (test_case[i] == 0) cout << 1 << " " << 0 << endl;
+		else if (test_case[i] == 1) cout << 0 << " " << 1 << endl;
+		else cout << fibo_dp(test_case[i] - 1) << " " << fibo_dp(test_case[i]) << endl;
+	}
+}
