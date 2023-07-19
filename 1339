@@ -1,0 +1,46 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<string>
+using namespace std;
+
+int arr[26];
+vector<string>word;
+
+int greedy() {
+	int p;
+	int sum = 0;
+
+	// 자릿수까지 고려한 값을 arr[26] 배열에 넣어놓고
+	for (int i = 0; i < word.size(); i++) {
+		p = 1;
+		for (int k = word[i].length()-1; 0<=k ; k--) {
+			arr[word[i][k] - 65] += p;
+			p = p * 10;
+		}
+	}
+	// 그걸 sorting 해서
+	sort(arr, arr + 26);
+	
+	p = 9;
+	for (int i = 25; 0<=i; i--) {
+		// 알파벳이 존재하면 (0이 아니면)
+		if (arr[i]) sum += arr[i] * p;
+		p--;
+	}
+	return sum;
+}
+
+int main(void) {
+	int n;
+	cin >> n;
+
+	string str;
+
+	for (int k = 0; k < n; k++) {
+		cin >> str;
+		word.push_back(str);
+	}
+
+	cout << greedy();
+}
