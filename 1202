@@ -1,0 +1,42 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<queue>
+#define MAX 300001
+using namespace std;
+
+priority_queue<int> pq;
+pair<int, int> info[MAX];  // 보석의 무게,가격
+int bag[MAX];  // 가방의 무게(용량)
+
+int main(void)
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N, K;
+	long long sum = 0;
+
+	cin >> N >> K;
+
+	// 보석의 무게, 가격
+	for (int i = 0; i < N; i++) {
+		cin >> info[i].first >> info[i].second;
+	}
+	// 가방에 담을 수 있는 최대 무게
+	for (int i = 0; i < K; i++) {
+		cin >> bag[i];
+	}
+
+	sort(info, info + N);  // 보석 무게 오름차순
+	sort(bag, bag + K);  // 가방 용량 오름차순 - (디폴트가 pair first 기준 오름차순정렬)
+
+	int j = 0;
+	for (int i = 0; i < K; i++) {
+		while (bag[i] >= info[j].first && j < N) 
+			pq.push(info[j++].second);
+		if (!pq.empty()) { sum += pq.top(); pq.pop(); }
+	}
+
+	cout << sum;
+}
