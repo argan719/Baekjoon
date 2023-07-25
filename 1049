@@ -1,0 +1,43 @@
+#include<iostream>
+#include<algorithm>
+using namespace std;
+
+int pack[51]; // 패키지(6개)가격
+int one[51];  // 낱개 가격
+
+int main(void) {
+
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	int N, M;
+	cin >> N >> M;
+
+	for (int i = 0; i < M; i++) {
+		cin >> pack[i] >> one[i];
+	}
+
+	sort(pack, pack + M);  // 오름차순 정렬- 패키지 가격 기준
+	sort(one, one + M);  // 오름차순 정렬 - 낱개 가격 기준
+	// 패키지 가격은 항상 낱개가격*6보다 작거나 같음. 클 수는 없다.
+	// 즉 낱개 가격이 기준이 되서 정렬을 해야 하고
+	// 낱개 가격이 가장 저렴한 곳 * N 이 싼지
+	// 패키지 가격이 가장 저렴한 곳의 패키지 가격이 싼지 비교하면 되지 않을까?
+	
+
+
+	int result = 0;
+	// 패키지 가격과 낱개*6개 가격 비교
+	if (pack[0] >= one[0] * 6) {    // 낱개가 더 싸거나 가격이 똑같은 경우 - 근데 이럴 경우 거의 없음.
+		result = one[0] * N;
+	}
+	else {  // 패키지가 더 싼 경우
+		int n = N / 6;
+		if (N % 6 > 0) { // 딱 6배수로 안 나눠떨어지는 경우
+			result = min(pack[0], one[0] * (N % 6));   // 패키지를 하나 더 추가하는게 싼지, 낱개로 부족한 것만 더 사는게 싼지 비교
+		}
+		result += pack[0] * n;
+	}
+
+	cout << result;
+}
