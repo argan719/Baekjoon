@@ -1,0 +1,61 @@
+#include<iostream>
+#define MAX 51
+using namespace std;
+
+char A[MAX][MAX];
+char B[MAX][MAX];
+int N, M;
+
+void change(int i, int k) {
+	for (int a = i; a <= i + 2; a++) {
+		for (int b = k; b <= k + 2; b++) {
+			if (A[a][b] == '1') A[a][b] = '0';
+			else A[a][b] = '1';
+		}
+	}
+}
+
+int main(void) {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+	cin >> N >> M;
+
+	char n;
+	int i, k;
+	for (i = 0; i < N; i++) {
+		for (int k = 0; k < M; k++) {
+			cin >> A[i][k];
+		}
+	}
+	for (i = 0; i < N; i++) {
+		for (int k = 0; k < M; k++) {
+			cin >> B[i][k];
+		}
+	}
+
+	int cnt = 0;
+	// 계속 맨 왼쪽 맨 위 값을 기준으로 A와 B가 다른지 탐색
+	for (i = 0; i < N-2; i++) {
+		for (k = 0; k < M - 2; k++) {  // 3x3이라서 M-3까지밖에 이동못함. - 커널로 전체행렬을 훑는다고 생각해봐
+			if (A[i][k] != B[i][k]) {
+				//if (N <= 2 || M <= 2) { cout << -1; break; }  	// 근데 N, M이 1,2인 경우는 change함수에서 3개까지 없으니까 범위 벗어날텐데 어캄? - 그래서 이 코드 추가
+				// 근데 다른 사람 코드 보니까 이런 코드가 없음. 틀리는 이유가 이것 때문일 수도
+				// 애초에 for문에서 N-2, M-2라서 N,M이 2보다 작거나 같다면 for문으로 들어올 수가 없음.
+				change(i, k); cnt++;
+			}
+		}
+	}
+
+	bool flag = true;
+	// 나머지 점 안 찍힌 부분들이 B랑 다른지 확인 가 아니라 전체 다 확인해야 하는 거임. 
+	// 점 찍힌 부분들이 전부 B랑 일치한다는 보장이 없지
+	for (i = 0; i < N; i++) {
+		for (k = 0; k < M; k++) {
+			if (A[i][k] != B[i][k]) { flag = false; break; }
+		}
+	}
+	if (flag) cout << cnt;
+	else cout << -1;
+
+}

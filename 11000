@@ -1,0 +1,36 @@
+#include<iostream>
+#include<algorithm>
+#include<queue>
+#define MAX 200001
+using namespace std;
+
+pair<int, int> time[MAX];
+priority_queue<int, vector<int>, greater<int>> end_time;   
+
+int main(void) {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	int N;
+	cin >> N;
+
+	for (int i = 0; i < N; i++) {
+		cin >> time[i].first >> time[i].second;
+	}
+	sort(time, time + N);  
+
+	int t = 1;
+	int i;
+	end_time.push(time[0].second);
+	for (i = 1; i < N; i++) {
+		if (time[i].first >= end_time.top()) {
+			end_time.pop();
+			end_time.push(time[i].second);
+		}
+		else {
+			end_time.push(time[i].second);
+			t++;
+		}
+	}
+
+	cout << t;
+}
