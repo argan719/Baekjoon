@@ -1,0 +1,52 @@
+#include<iostream>
+#include<algorithm>
+#include<stack>
+#define MAX 500001
+using namespace std;
+
+int input[MAX];
+int main(void) {
+	int N, K;
+	char c;
+
+	cin >> N >> K;
+
+	stack<int> num;
+	for (int i = 0; i < N; i++) {
+		cin >> c;
+		input[i] = c - '0';
+	}
+
+	int cnt = 0;
+	num.push(input[0]);
+	for (int i = 1; i < N; i++) {
+		if (cnt == K) {  // K개만큼을 다 뺏다면 더 이상 pop X. 계속 push
+			num.push(input[i]);
+		}
+		else if (num.top() < input[i]) { 
+			while (num.top() < input[i]) {  // 지금 넣으려는 값보다 크거나 같은 값이(스택에서) 나올 때까지 계속 pop
+				num.pop();
+				cnt++;
+				if (cnt == K) break;
+				if (num.empty()) break;
+			}
+			num.push(input[i]);  // 현재 값 push
+		}
+		else num.push(input[i]); // 스택의 top보다 현재 넣으려는 값이 더 작거나 같다면 그냥 현재 넣으려는 값 push 
+	}
+
+	// 만약 숫자들이 내림차순으로 되어 있어서 위의 과정을 진행했지만 전체 N개에서 K개만큼 못 뺏다면 K개 뺄 때까지 계속 pop
+	while (cnt < K) {
+		num.pop();
+		cnt++;
+	}
+
+	// 스택 거꾸로 출력
+	for (int i = N-K-1; 0 <= i; i--) {
+		input[i] = num.top();
+		num.pop();
+	}
+	for (int i = 0; i < N-K; i++) {
+		cout << input[i];
+	}
+}
