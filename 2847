@@ -1,0 +1,23 @@
+#include<iostream>
+using namespace std;
+
+int score[101];
+
+int main(void) {
+	int N;
+	cin >> N;
+
+	for (int i = 0; i < N; i++) {
+		cin >> score[i];
+	}
+
+	int cnt = 0;
+	for (int i = N - 1; 0 <= i; i--) {
+		while (score[i] <= score[i - 1]) {
+			score[i - 1]--;
+			cnt++;	
+		}
+	}
+
+	cout << cnt;
+}
