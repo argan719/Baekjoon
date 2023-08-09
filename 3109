@@ -1,0 +1,58 @@
+#include<iostream>
+#define ROW 10001
+#define COL 501
+using namespace std;
+
+int grid[ROW][COL];
+int visit[ROW][COL];
+int R, C;
+
+int cnt;
+int dx[] = { -1, 0, 1 };
+int dy[] = { 1, 1, 1};
+
+bool flag;
+void dfs(int x, int y) {
+
+	visit[x][y] = 1;
+	if (y == C - 1) {
+		cnt++; 
+		flag = true;
+		return;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		int nx = x + dx[i];   // i-1(오른쪽대각선위)  i(오른쪽)  i+1(오른쪽대각선아래)
+		int ny = y + dy[i];  // k+1
+
+		if (nx >= 0 && ny >= 0 && nx < R && ny < C)
+		{
+			if (grid[nx][ny]  && !visit[nx][ny])  // 벽이 아니고 아직 방문 안했다면
+			{
+				dfs(nx, ny);   // 더 탐색
+				if (flag) return;
+			}
+		}
+	}
+}
+
+int main(void) {
+	cin >> R >> C;
+
+	int i, k;
+	char c;
+	for (i = 0; i < R; i++) {
+		for (k = 0; k < C; k++) {
+			cin >> c;
+			if (c == 'x') grid[i][k] = 0;  // 벽
+			else grid[i][k] = 1;  // 길
+		}
+	}
+
+	for (int i = 0; i < R; i++) {
+		flag = false;
+		dfs(i, 0);   // 각 행의 첫 열을 보냄 (처음 열)
+	}
+	cout << cnt;
+}
