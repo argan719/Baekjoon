@@ -1,0 +1,32 @@
+#include<iostream>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+int main(void) {
+	string s;
+	string t;
+
+	cin >> s >> t;
+
+	int len = t.length() - s.length();   // T와 S 문자열 길이 차
+
+	int i = 0;
+	for (int k = t.length() - 1; i < len; k--, i++) {
+		if (t[k] == 'B') { 
+			reverse(t.begin(), t.begin() + k ); // 그 전까지만 문자열 전체 reverse
+		}
+		else if (t[k] == 'A') continue;
+		else {
+			cout << 0; break;
+		}
+	}
+	
+	int a;
+	if (i >= len) {
+		for (a = 0; a < s.length(); a++) {
+			if (s[a] != t[a]) { cout << 0;  break;}
+		}
+		if (a >= s.length()) cout << 1;
+	}
+}
