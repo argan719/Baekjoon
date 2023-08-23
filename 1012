@@ -1,0 +1,70 @@
+#include<iostream>
+#include<vector>
+#define MAX 51
+using namespace std;
+
+int matrix[MAX][MAX];
+int visited[MAX][MAX];
+
+int M, N;
+int cnt;
+
+bool dfs(int x, int y)
+{
+	if (x < 0 || x >= M || y < 0 || y >= N) return false;
+
+	if (matrix[x][y] && !visited[x][y]) {
+		visited[x][y] = 1;
+
+		dfs(x - 1, y);
+		dfs(x + 1, y);
+		dfs(x, y - 1);
+		dfs(x, y + 1);
+
+		return true;
+	}
+	else return false;
+	
+}
+
+void init() {
+	for (int i = 0; i < M; i++) {
+		for (int k = 0; k < N; k++) {
+			matrix[i][k] = 0;
+			visited[i][k] = 0;
+		}
+	}
+}
+
+int main(void) {
+
+	int T, K;
+	cin >> T;
+
+	int x, y;
+	vector<int> result;
+
+	while (T > 0) {
+		cin >> M >> N >> K;
+
+		for (int i = 0; i < K; i++) {
+			cin >> x >> y;
+			matrix[x][y] = 1;
+		}
+
+		cnt = 0;
+		for (int i = 0; i < M; i++) {
+			for (int k = 0; k < N; k++) {
+				if (dfs(i, k)) cnt++;
+			}
+		}
+
+		result.push_back(cnt);
+		T--;
+		init();
+	}
+	
+	for (int i = 0; i < result.size(); i++) {
+		cout << result[i] << "\n";
+	}
+}
