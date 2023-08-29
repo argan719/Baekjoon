@@ -1,0 +1,96 @@
+#include<iostream>
+#include<string>
+#include<vector>
+#define MAX 101
+using namespace std;
+
+int matrix[MAX][MAX];
+int visited[MAX][MAX];
+// R=0, G=1, B=2
+int N;
+int color;
+
+bool dfs(int c, int x, int y) {
+	
+	if (x < 0 || x >= N || y < 0 || y >= N) return false;
+	
+	if (!visited[x][y] && matrix[x][y] == c) {
+		visited[x][y] = 1;
+	
+		dfs(color, x + 1, y);
+		dfs(color, x - 1, y);
+		dfs(color, x, y + 1);
+		dfs(color, x, y - 1);
+
+		return true;
+	}
+	else return false;
+
+}
+
+bool dfs(int x, int y) {
+
+	if (x < 0 || x >= N || y < 0 || y >= N) return false;
+
+	if (!visited[x][y] && (matrix[x][y] == 0 || matrix[x][y] == 1)) {
+		visited[x][y] = 1;
+
+		dfs(x + 1, y);
+		dfs(x - 1, y);
+		dfs(x, y + 1);
+		dfs(x, y - 1);
+
+		return true;
+	}
+	else return false;
+
+}
+
+void init() {
+	for (int i = 0; i < N; i++) {
+		for (int k = 0; k < N; k++) {
+			visited[i][k] = 0;
+		}
+	}
+}
+
+int main(void)
+{
+	cin >> N;
+	string s;
+	for (int i = 0; i < N; i++) {
+		cin >> s;
+		for (int k = 0; k < N; k++) {
+			if (s[k] == 'R') matrix[i][k] = 0;
+			else if (s[k] == 'G') matrix[i][k] = 1;
+			else matrix[i][k] = 2;
+		}
+	}
+
+	int area[3] = { 0, };
+
+	for (int i = 0; i < N; i++) {
+		for (int k = 0; k < N; k++) {
+			color = matrix[i][k];
+			if (dfs(color, i, k)) area[color]++;
+		}
+	}
+
+	int n = 0;
+	for (int i = 0; i < 3; i++) {
+		n += area[i];
+	}
+
+	init();
+	int rg = 0;
+	for (int i = 0; i < N; i++) {
+		for (int k = 0; k < N; k++) {
+			if (matrix[i][k] != 2) {
+				if (dfs(i, k)) rg++;
+			}
+		}
+	}
+	
+	rg += area[2];
+	cout << n << " " << rg;
+}
