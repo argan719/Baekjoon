@@ -1,0 +1,68 @@
+#include<iostream>
+#include<string>
+#include<vector>
+#define MAX 51
+using namespace std;
+
+int W, H;
+int matrix[MAX][MAX];
+
+bool dfs(int x, int y) {
+	if (x < 0 || x >= H || y < 0 || y >= W) return false;
+
+	if (matrix[x][y] == 1) {
+		matrix[x][y] = 0;
+
+		dfs(x - 1, y);  // 좌
+		dfs(x + 1, y);  // 우
+		dfs(x, y + 1); // 위
+		dfs(x, y - 1); // 아래
+		
+		dfs(x - 1, y - 1);  // 왼쪽 위 대각선
+		dfs(x - 1, y + 1);  // 오른쪽 위 대각선
+		dfs(x + 1, y - 1); // 왼쪽 아래 대각선
+		dfs(x + 1, y + 1); // 오른쪽 아래 대각선
+
+		return true;
+	}
+	else return false;
+}
+
+void init() {
+	for (int i = 0; i < MAX; i++) {
+		for (int k = 0; k < MAX; k++) {
+			matrix[i][k] = 0;
+		}
+	}
+}
+
+int main(void) {
+
+	int i, k;
+	vector<int> island;
+	int cnt;
+	while (1) {
+		cnt = 0;
+		cin >> W >> H;
+		if (W == 0 && H == 0) break;
+
+		for (i = 0; i < H; i++) {
+			for (k = 0; k < W; k++) {
+				cin >> matrix[i][k];
+			}
+		}
+
+		for (i = 0; i < H; i++) {
+			for (k = 0; k < W; k++) {
+				if (dfs(i, k)) cnt++;
+			}
+		}
+		island.push_back(cnt);
+		init();
+	}
+
+	for (int v = 0; v < island.size(); v++) {
+		cout << island[v] << "\n";
+	}
+
+}
