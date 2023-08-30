@@ -1,0 +1,41 @@
+#include<iostream>
+#include<vector>
+#define MAX 100002
+using namespace std;
+int N;
+vector<int> map[MAX];
+int visited[MAX];
+int result[MAX];
+
+void dfs(int v) {
+	if (!visited[v]) {
+		visited[v] = 1;
+
+		for (int i = 0; i < map[v].size(); i++) {
+			if (result[map[v][i]] == 0) {
+				result[map[v][i]] = v;
+				dfs(map[v][i]);
+			}
+		}
+	}
+}
+
+int main(void) {
+	cin >> N;
+
+	int x, y;
+	for (int i = 1; i < N; i++) {
+		cin >> x >> y;
+		map[x].push_back(y);
+		map[y].push_back(x);
+	}
+
+	for (int i = 1; i <= N; i++) {
+		dfs(i);
+	}
+	
+	for (int i = 2; i <= N; i++) {
+		cout << result[i] << "\n";
+	}
+
+}
