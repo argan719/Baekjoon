@@ -1,0 +1,71 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#define MAX 101
+using namespace std;
+typedef struct{
+	int lx;
+	int ly;
+	int rx;
+	int ry;
+}pos;
+
+vector<pos>rectangle;
+int matrix[MAX][MAX];
+int N, M, K;
+int visited[MAX][MAX];
+int area;
+
+int dfs(int x, int y) {
+	if (x < 0 || x >= M || y < 0 || y >= N) return 0;
+
+	if (!visited[x][y] && !matrix[x][y]) {
+		area++;
+		visited[x][y] = 1;
+
+		dfs(x - 1, y);
+		dfs(x + 1, y);
+		dfs(x, y - 1);
+		dfs(x, y + 1);
+
+		return area;
+	}
+	else return 0;
+}
+
+int main(void) {
+	cin >> M >> N >> K;
+	pos p;
+	for (int i = 0; i < K; i++) {
+		cin >> p.lx >> p.ly >> p.rx >> p.ry;
+		rectangle.push_back(p);
+	}
+
+	for (int i = 0; i < rectangle.size(); i++) {
+		p = rectangle[i];
+		for (int x = p.lx; x < p.rx; x++) {
+			for (int y = p.ly; y < p.ry; y++) {
+				matrix[M-1-y][x] = 1;
+			}
+		}
+	}
+
+	int cnt = 0;
+	int a;
+	vector<int> result;
+	for (int i = 0; i < M; i++) {
+		for (int k = 0; k < N; k++) {
+			area = 0;
+			a = dfs(i, k);
+			if (a != 0) {
+				cnt++;
+				result.push_back(a);
+			}
+		}
+	}
+
+	sort(result.begin(), result.end());
+	cout << cnt << "\n";
+	for (int i = 0; i < result.size(); i++)
+		cout << result[i] << " ";
+}
