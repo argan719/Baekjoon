@@ -1,0 +1,38 @@
+#include<iostream>
+#define MAX 101
+using namespace std;
+
+int matrix[MAX][MAX];
+int N;
+int a, b;
+int result;
+int visited[MAX];
+
+void dfs(int v, int cnt) {
+	visited[v] = 1;
+	for (int i = 1; i <= N; i++) {
+		if (matrix[v][i] && !visited[i]) {
+			if (i == b) result = cnt+1;
+			else dfs(i, cnt + 1);
+		}
+	}
+}
+int main(void) {
+	cin >> N;
+
+	cin >> a >> b;   // 촌수 계산해야 하는 두 명 번호
+
+	int x, y;
+	int m;
+	cin >> m;
+	for (int i = 0; i < m; i++) {
+		cin >> x >> y;
+		// 양방향
+		matrix[x][y] = 1;
+		matrix[y][x] = 1;
+	}
+	
+	dfs(a, 0);
+	if (!result) cout << -1;
+	else cout << result;
+}
