@@ -1,0 +1,84 @@
+//
+//  1707.cpp
+//  mac
+//
+//  Created by jihyun on 2023/09/24.
+//
+
+#include <iostream>
+#include<vector>
+#include<memory.h>
+#define MAX 20001
+
+#define RED 1
+#define BLUE 2
+using namespace std;
+
+vector<int> matrix[MAX];
+int visited[MAX];
+vector<int> answer;
+
+int V,E;
+
+void dfs(int v){
+    int c = visited[v];
+    if(c == 0) { visited[v] = 1;  c = 1;}
+    
+    for(int i=0;i<matrix[v].size();i++){
+        int r = matrix[v][i];
+        if(visited[r] == 0){
+            visited[r] = 3-c;
+            dfs(r);
+        }
+    }
+}
+
+bool check(){
+    for(int i=1;i<=V;i++){
+        int s = matrix[i].size();
+        for(int k=0;k<s;k++){
+            if(visited[i] == visited[matrix[i][k]]) return false;
+        }
+    }
+    return true;
+}
+
+
+int main(void){
+    int K;
+    int u,v;
+    cin >> K;
+    while(K > 0){
+        cin >> V >> E;
+        for(int i=0;i<E;i++){
+            cin >> u >> v;
+            // 양방향으로
+            matrix[u].push_back(v);
+            matrix[v].push_back(u);
+        }
+        
+        // 마킹용
+        for(int i=1;i<=V;i++){
+            if(visited[i] == 0) {
+                dfs(i);
+            }
+        }
+        
+        // 확인용
+        if (check()) answer.push_back(1);
+        else answer.push_back(0);
+        
+        K--;
+        for(int i=1;i<=V;i++){
+            matrix[i].clear();
+        }
+        memset(visited, 0, sizeof(visited));
+    }
+    
+    
+    for(int i=0;i<answer.size();i++){
+        if(answer[i]) cout << "YES" << "\n";
+        else cout << "NO" << "\n";
+    }
+}
+
