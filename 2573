@@ -52,14 +52,14 @@ int main(void){
     
     while(true){
         if(island < 2){
-            // 녹이기
+            // 녹이는 거 확인(녹이지는 않음)
             year++;
             for(int i=1;i<N-1;i++){
                 for(int k=1;k<M-1;k++){
                     if(matrix[i][k] > 0) melting(i, k);
                 }
             }
-            
+            // 여기서 따로 모든 빙산 동시에 녹이기 (먼저 녹인게 다른 칸 녹이는 거 확인할 때 영향을 주면 안되므로)
             for(int i=1;i<N-1;i++){
                 for(int k=1;k<M-1;k++){
                     if(cnt[i][k] > 0){
