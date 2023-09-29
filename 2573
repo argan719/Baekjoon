@@ -1,0 +1,97 @@
+#include<iostream>
+#include<memory.h>
+#define MAX 301
+using namespace std;
+
+int matrix[MAX][MAX];
+int N, M;
+int visited[MAX][MAX];
+int cnt[MAX][MAX];
+
+int year;
+int island = 1;
+// 빙산이 두 덩어리 이상인지 확인
+bool check(int x, int y){
+    //if(x < 0 || x >= N || y < 0 || y >= M) return false;
+    
+    if(!visited[x][y] && matrix[x][y] != 0){
+        visited[x][y] = 1;
+        
+        check(x-1, y);
+        check(x+1, y);
+        check(x, y-1);
+        check(x, y+1);
+        
+        return true;
+    }
+    return false;
+}
+
+// 1년 증가시키고 빙산 높이 줄임
+void melting(int x, int y){
+    
+    int c=0;
+    
+    if(matrix[x-1][y] == 0) c++;
+    if(matrix[x+1][y] == 0) c++;
+    if(matrix[x][y-1] == 0) c++;
+    if(matrix[x][y+1] == 0) c++;
+    
+    cnt[x][y] = c;
+}
+
+
+int main(void){
+    cin >> N >> M;
+    for(int i=0;i<N;i++){
+        for(int k=0;k<M;k++){
+            cin >> matrix[i][k];
+        }
+    }
+    
+    
+    while(true){
+        if(island < 2){
+            // 녹이기
+            year++;
+            for(int i=1;i<N-1;i++){
+                for(int k=1;k<M-1;k++){
+                    if(matrix[i][k] > 0) melting(i, k);
+                }
+            }
+            
+            for(int i=1;i<N-1;i++){
+                for(int k=1;k<M-1;k++){
+                    if(cnt[i][k] > 0){
+                        matrix[i][k] -= cnt[i][k];
+                        if(matrix[i][k] < 0) matrix[i][k] = 0;
+                    }
+                }
+            }
+            
+        }
+        else if(island >= 2) break;
+        
+        // 빙산 개수 확인
+        island = 0;
+        for(int i=1;i<N-1;i++){
+            for(int k=1;k<M-1;k++){
+                if(matrix[i][k] > 0){
+                    if(check(i,k)) island++;
+                }
+            }
+        }
+        
+        
+        if(island == 0) break;
+        
+        for(int i=0;i<N;i++){
+            memset(visited[i], 0, sizeof(int) * M);
+        }
+        
+    }
+    
+    if(island == 0) cout << 0;
+    else cout << year;
+    
+}
