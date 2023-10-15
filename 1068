@@ -1,0 +1,60 @@
+#include<iostream>
+#define MAX 51
+using namespace std;
+
+int matrix[MAX][MAX];
+int visited[MAX];
+int N;
+int parent;
+
+void dfs(int x){
+    visited[x] = 1;
+    
+    for(int i=0;i<N;i++){
+        if(matrix[x][i] == 1) {
+            dfs(i);
+        }
+    }
+}
+
+void search_parent(int x){
+    for(int i=0;i<N;i++){
+        if(matrix[i][x]) { matrix[i][x]=0; break;}
+    }
+}
+
+int main(void){
+    cin >> N;
+
+    int x;
+    int cnt=0;
+    for(int i=0;i<N;i++){
+        cin >> x;
+        if(x != -1) {
+            matrix[x][i] = 1;
+        }
+        else parent = x;
+    }
+    
+    cin >> x;   // 지울 노드 번호
+    // 지울 노드 번호의 부모 노드를 알아야 함.
+    
+    if(x == parent) cout << 0;  // 이 부분이 x == 0 이였는데 x == parent로 바꾸니까 통과
+    else{
+        search_parent(x);
+
+        dfs(x);
+        
+        int i,k;
+        for(i=0;i<N;i++){
+            if(visited[i]) continue;
+            for(k=0;k<N;k++){
+                if(matrix[i][k]) break;
+            }
+            if(k==N) cnt++;
+        }
+        
+        cout << cnt;
+    }
+   
+}
