@@ -7,6 +7,7 @@ int visited[MAX];
 int N;
 int parent;
 
+// visited 로 삭제된 노드 표시
 void dfs(int x){
     visited[x] = 1;
     
@@ -16,7 +17,7 @@ void dfs(int x){
         }
     }
 }
-
+// 지울 노드만 자식에서 삭제
 void search_parent(int x){
     for(int i=0;i<N;i++){
         if(matrix[i][x]) { matrix[i][x]=0; break;}
@@ -37,7 +38,7 @@ int main(void){
     }
     
     cin >> x;   // 지울 노드 번호
-    // 지울 노드 번호의 부모 노드를 알아야 함.
+    // 지울 노드 번호의 부모 노드를 알아야 함. - 다르게 처리
     
     if(x == parent) cout << 0;  // 이 부분이 x == 0 이였는데 x == parent로 바꾸니까 통과
     else{
@@ -47,9 +48,9 @@ int main(void){
         
         int i,k;
         for(i=0;i<N;i++){
-            if(visited[i]) continue;
+            if(visited[i]) continue;  // 삭제된 노드면 무시
             for(k=0;k<N;k++){
-                if(matrix[i][k]) break;
+                if(matrix[i][k]) break;  // 다 돌았는데도 자식이 하나도 없어서 break 안 걸려서 K==N이라면 leaf 노드인 거임.
             }
             if(k==N) cnt++;
         }
