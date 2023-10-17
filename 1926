@@ -1,0 +1,53 @@
+#include<iostream>
+#define MAX 501
+using namespace std;
+
+int matrix[MAX][MAX];
+int N, M;
+int visited[MAX][MAX];
+
+int area;
+
+int dfs(int x, int y){
+    if(x < 0 || x >= N || y < 0 || y >=M) return 0;
+    
+    if(!visited[x][y] && matrix[x][y]){
+        visited[x][y] = 1;
+        area++;
+        
+        dfs(x+1, y);
+        dfs(x-1, y);
+        dfs(x, y+1);
+        dfs(x, y-1);
+        
+        return area;
+    }
+    
+    return 0;
+}
+
+int main(void){
+    cin >> N >> M;
+    
+    for(int i=0;i<N;i++){
+        for(int k=0;k<M;k++){
+            cin >> matrix[i][k];
+        }
+    }
+    
+    int cnt = 0;
+    int max = 0;
+    int a;
+    for(int i=0;i<N;i++){
+        for(int k=0;k<M;k++){
+            a = dfs(i,k);
+            if(a!=0) {
+                cnt++;
+                if(max < a) max = a;
+            }
+            area=0;
+        }
+    }
+    
+    cout << cnt << endl << max;
+}
