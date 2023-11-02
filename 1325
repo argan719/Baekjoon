@@ -1,0 +1,56 @@
+#include<iostream>
+#include<vector>
+#include<cstring>
+#define MAX 10005
+using namespace std;
+
+int N,M;
+vector<int> matrix[MAX];
+
+int cnt[MAX];  // memoization
+int val;
+bool visited[MAX];
+
+
+void dfs(int start, int next){
+    visited[next] = true;
+    
+    for(int i=0;i<matrix[next].size();i++){
+
+        if(!visited[matrix[next][i]]){
+            val++;
+            dfs(start, matrix[next][i]);
+        }
+    }
+    
+    cnt[start] = (cnt[start] > val ? cnt[start] : val);
+    
+}
+
+
+int main(void){
+    cin >> N >> M;
+    
+    int a, b;
+    for(int i=0;i<M;i++){
+        cin >> a >> b;
+        matrix[b].push_back(a);   // a가 b를 신뢰한다.
+    }
+    
+    
+    int max = 0;
+    for(int i=1;i<=N;i++){
+        val = 0;
+        memset(visited, false, N+1);   // 매번 visited 를 초기화 해줘야 함 - 사이클 때문!
+        dfs(i, i);
+        if(max < cnt[i]){
+            max = cnt[i];
+        }
+    }
+    
+    
+    for(int i=1;i<=N;i++){
+        if(cnt[i] == max) cout << i << " ";
+    }
+
+}
