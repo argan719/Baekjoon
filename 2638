@@ -1,0 +1,98 @@
+#include<iostream>
+#define MAX 101
+using namespace std;
+
+int N,M;
+int matrix[MAX][MAX];
+
+int visited[MAX][MAX];
+bool air[MAX][MAX] = {false,};
+bool cheese[MAX][MAX] = {false,};
+int cnt;
+int side;
+
+int dx[] = {-1, 1, 0, 0};
+int dy[] = {0, 0, -1, 1};
+
+
+void dfs(int a, int b){
+    if(visited[a][b]) return;
+    
+    visited[a][b] = 1;
+    
+    for(int i=0;i<4;i++){
+        int x = a + dx[i];
+        int y = b + dy[i];
+        
+        if(x >= 0 && x < N && y >= 0 && y < M && matrix[x][y] == 0 && air[x][y]) {
+            side++;
+            if(side >= 2){ cheese[a][b] = true; break; }
+        }
+    }
+}
+
+
+void hole(int a, int b){
+    if(visited[a][b]) return;
+    
+    visited[a][b] = 1;
+    air[a][b] = true;
+    
+    for(int i=0;i<4;i++){
+        int x = a + dx[i];
+        int y = b + dy[i];
+        
+        if(x >= 0 && x < N && y >= 0 && y < M && matrix[x][y] == 0) {
+            hole(x,y);
+        }
+    }
+}
+
+
+
+int main(void){
+    cin >> N >> M;
+    
+    int i,k;
+    
+    for(i=0;i<N;i++){
+        for(k=0;k<M;k++){
+            cin >> matrix[i][k];
+        }
+    }
+    
+    int time = 0;
+    while(true){
+        
+        // 구멍인지 공기인지 판별
+        hole(0,0);  //0,0 은 0인게 보장되어 있음.
+
+
+        // 공기랑 접촉되어 있는 치즈인지 확인
+        cnt = 0;
+        
+        for(i=1;i<N;i++){
+            for(k=1;k<M;k++){
+                side = 0;
+                if(matrix[i][k] == 1) { cnt++; dfs(i,k);}
+            }
+        }
+        
+        if(cnt == 0) break;
+        
+        // 녹이기
+        for(i=0;i<N;i++){
+            for(k=0;k<M;k++){
+                if(cheese[i][k]) { matrix[i][k] = 0; cheese[i][k] = false;}
+                visited[i][k] = 0;
+                air[i][k] = false;
+            }
+        }
+        time++;
+        
+        
+    }
+    cout << time;
+    
+    
+}
