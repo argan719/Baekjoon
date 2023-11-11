@@ -1,0 +1,54 @@
+#include<iostream>
+#include<vector>
+#define MAX 105
+using namespace std;
+
+int N,M,K;
+int matrix[MAX][MAX];
+//vector<pair<int, int>> pos;
+int visited[MAX][MAX];
+
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
+
+int cnt;
+
+void dfs(int a, int b){
+    if(visited[a][b]) return;
+    
+    visited[a][b] = 1;
+    cnt++;
+    
+    for(int i=0;i<4;i++){
+        int x = a + dx[i];
+        int y = b + dy[i];
+        
+        if(x >= 1 && x <= N && y >= 1 && y <= M && matrix[x][y]){
+            dfs(x, y);
+        }
+    }
+}
+
+int main(void){
+    cin >> N >> M >> K;
+    
+    int x,y;
+    for(int i=0;i<K;i++){
+        cin >> x >> y;
+        //pos.push_back(make_pair(x, y));
+        matrix[x][y] = 1;
+    }
+    
+    int max = 0;
+    for(int i=1;i<=N;i++){
+        for(int k=1;k<=M;k++){
+            cnt = 0;
+            if(matrix[i][k]) dfs(i,k);
+            if(max < cnt) max = cnt;
+        }
+    }
+    
+    
+    cout << max;
+    
+}
