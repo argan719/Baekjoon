@@ -1,0 +1,63 @@
+#include<iostream>
+#include<cstring>
+#include<vector>
+#define MAX 501
+using namespace std;
+
+int N, M;
+
+int visited[MAX];
+
+int answer = 0;
+int cnt = 0;
+
+vector<int> taller[MAX];
+vector<int> smaller[MAX];
+
+void dfs_taller(int v){
+    
+    for(int i=0;i<taller[v].size();i++){
+        int next = taller[v][i];
+        if(!visited[next]) {
+            visited[next] = 1;
+            cnt++;
+            dfs_taller(next);
+        }
+    }
+}
+
+void dfs_smaller(int v){
+    
+    for(int i=0;i<smaller[v].size();i++){
+        int next = smaller[v][i];
+        if(!visited[next]) {
+            visited[next] = 1;
+            cnt++;
+            dfs_smaller(next);
+        }
+    }
+}
+
+
+int main(void){
+    cin >> N >> M;
+    
+    int a,b;
+    for(int i=0;i<M;i++){
+        cin >> a >> b;   // a가 b보다 작다
+        taller[a].push_back(b);  // a보다 b가 크다
+        smaller[b].push_back(a);  // b가 a보다 크다
+    }
+        
+    for(int i=1;i<=N;i++){
+        memset(visited, 0, sizeof(visited));
+        dfs_taller(i);
+        memset(visited, 0, sizeof(visited));
+        dfs_smaller(i);
+        if(cnt == N - 1) answer++;
+        cnt = 0;
+    }
+    
+    cout << answer;
+}
+
