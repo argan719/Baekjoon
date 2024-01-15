@@ -1,0 +1,56 @@
+#include<iostream>
+#include<cstring>
+#include<vector>
+#define MAX 10001
+using namespace std;
+
+int T;
+int N;
+
+int parent[MAX];
+int visited[MAX];
+
+
+int main(void){
+    
+    cin >> T;
+    
+    int test = 0;
+    int a, b;
+    int x,y;
+    
+    vector<int> result;
+    while(test < T){
+        test ++;
+    
+        cin >> N;
+        
+        for(int i=1;i<=N;i++){
+            parent[i] = 0;
+            visited[i] = 0;
+        }
+        
+        for(int i=0;i<N-1;i++){
+            cin >> a >> b; // a가 b의 부모다
+            parent[b] = a;   // a는 b의 부모다
+        }
+        
+        cin >> x >> y;   // 구해야 할 두 노드
+        
+        while(x != 0){
+            visited[x] = 1;
+            x = parent[x];
+        }
+        
+        while(visited[y] != 1){
+            y = parent[y];
+        }
+        
+        result.push_back(y);
+        
+    }
+    
+    for(int i=0;i<result.size();i++){
+        cout << result[i] << endl;
+    }
+}
