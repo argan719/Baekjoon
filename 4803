@@ -1,0 +1,75 @@
+#include<iostream>
+#include<vector>
+#define MAX 501
+using namespace std;
+
+int N, M;
+int matrix[MAX][MAX];
+int visited[MAX];
+
+vector<int> result;
+int cnt=0;
+bool flag = true;
+
+
+int dfs(int v, int before){
+    if(visited[v]) return 0;
+    visited[v] = 1;
+    
+    for(int i=1;i<=N;i++){
+        if(matrix[v][i] == 0) continue;
+        
+        if(matrix[v][i] == 1 && visited[i]){
+            if(i == before) continue;
+            else flag = false;
+        }
+        else if(matrix[v][i] && !visited[i]){
+            dfs(i, v);
+        }
+    }
+    
+    return flag;
+}
+
+
+
+int main(void){
+    
+    int a,b;
+    
+    while(true){
+        cin >> N >> M;
+        if(N == 0 && M == 0) break;
+        
+        for(int i=0;i<M;i++){
+            cin >> a >> b;
+            matrix[a][b] = 1;
+            matrix[b][a] = 1;
+        }
+        
+        for(int i=1;i<=N;i++){
+            if(!visited[i]) {
+                flag = true;
+                if(dfs(i, 0)) cnt++;
+            }
+        }
+        
+        result.push_back(cnt);
+        cnt=0;
+        
+        for(int i=1;i<=N;i++){
+            visited[i] = 0;
+            for(int k=1;k<=N;k++){
+                matrix[i][k] = 0;
+            }
+        }
+    }
+    
+    for(int i=0;i<result.size();i++){
+        cout << "Case " << i+1 << ": ";
+        if(result[i] == 0) cout << "No trees.";
+        else if(result[i] == 1) cout << "There is one tree.";
+        else cout << "A forest of " << result[i] << " trees.";
+        cout << endl;
+    }
+}
