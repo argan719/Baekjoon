@@ -1,0 +1,49 @@
+#include<iostream>
+#include<vector>
+#include<cstring>
+#define MAX 100001
+using namespace std;
+
+int N, R, Q;
+vector<int> matrix[MAX];
+int visited[MAX];
+int dp[MAX];
+
+
+void find_query(int v, int parent){
+    visited[v] = 1;
+
+    for(int i=0;i<matrix[v].size();i++){
+        if(!visited[matrix[v][i]]) {
+            find_query(matrix[v][i], v);
+        }
+    }
+    if(parent != -1){  // 루트가 아니면
+        dp[parent] += dp[v];
+    }
+}
+
+int main(void){
+    cin.tie(0) -> sync_with_stdio(0);
+    
+    cin >> N >> R >> Q;
+    
+    int u,v;
+    int q;
+    for(int i=0;i<N-1;i++){
+        cin >> u >> v;
+        matrix[u].push_back(v);
+        matrix[v].push_back(u);
+        dp[i+1] = 1;
+    }
+    dp[N-1] = 1;
+    dp[N] = 1;
+    
+    find_query(R, -1);
+    
+    for(int i=0;i<Q;i++){
+        cin >> q;
+        cout << dp[q] << "\n";
+    }
+
+}
