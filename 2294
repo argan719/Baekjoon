@@ -1,0 +1,30 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#define MAX 10001
+using namespace std;
+
+vector<int> matrix(MAX,MAX);
+int N,K;
+
+int main(void){
+    cin >> N >> K;
+    int coin[N];
+    
+    for(int i=0;i<N;i++){
+        cin >> coin[i];
+    }
+    
+    matrix[0] = 0;
+    for(int i=0;i<N;i++){
+        for(int k=coin[i]; k<=K;k++){
+            if(matrix[k-coin[i]] != MAX) {
+                matrix[k] = min(matrix[k], matrix[k-coin[i]] + 1);
+            }
+            //else matrix[k] = MAX;
+        }
+    }
+    
+    if(matrix[K] == MAX) cout << -1;
+    else cout << matrix[K];
+}
