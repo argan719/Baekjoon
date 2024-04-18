@@ -1,0 +1,61 @@
+#include<iostream>
+#define MAX 100001
+using namespace std;
+
+int T,N;
+int arr[2][MAX];
+int dp[2][MAX];
+
+int max(int a, int b){
+    if(a > b) return a; return b;
+}
+
+int main(void){
+    cin >> T;
+    
+    while(T > 0){
+        T--;
+        
+        cin >> N;
+        for(int i=0;i<2;i++){
+            for(int k=1;k<=N;k++){
+                cin >> arr[i][k];
+            }
+        }
+        
+        dp[0][0] = 0;
+        dp[1][0] = 0;
+        
+        dp[0][1] = arr[0][1];
+        dp[1][1] = arr[1][1];
+        
+        for(int k=2;k<=N;k++){
+            for(int i=0;i<2;i++){
+                if(i==0){
+                    dp[i][k] = max( max(dp[i][k-2], dp[i+1][k-2]), dp[i+1][k-1]) + arr[i][k];
+                }
+                else{
+                    dp[i][k] = max( max(dp[i-1][k-1], dp[i-1][k-2]), dp[i][k-2]) + arr[i][k];
+                }
+            }
+        }
+        
+        int result = 0;
+        for(int i=0;i<2;i++){
+            for(int k=0;k<=N;k++){
+                if(dp[i][k] > result) result = dp[i][k];
+            }
+        }
+        
+        for(int i=0;i<2;i++){
+            for(int k=0;k<=N;k++){
+                dp[i][k] = 0;
+                arr[i][k] = 0;
+            }
+        }
+        
+        cout << result << "\n";
+        
+        
+    }
+}
