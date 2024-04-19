@@ -1,0 +1,49 @@
+#include<iostream>
+#include<vector>
+#define MAX 1025
+using namespace std;
+
+int N, M;
+int arr[MAX][MAX];
+int dp[MAX][MAX];
+
+vector<pair< pair<int,int>, pair<int,int> >> pos;
+
+int main(void){
+    cin >> N >> M;
+    
+    arr[0][0] = 0;
+    for(int i=1;i<=N;i++){
+        for(int k=1;k<=N;k++){
+            cin >> arr[i][k];
+        }
+    }
+    
+    int a,b,c,d;
+    for(int i=0;i<M;i++){
+        cin >> a >> b >> c >> d;
+        pos.push_back(make_pair(make_pair(a,b), make_pair(c,d)));
+    }
+    
+    
+    
+    dp[0][0] = arr[0][0];
+    for(int i=1;i<=N;i++){
+        for(int k=1;k<=N;k++){
+            dp[i][k] = dp[i-1][k] + dp[i][k-1] - dp[i-1][k-1] + arr[i][k];
+        }
+    }
+    
+    for(int i=0;i<M;i++){
+        int x = pos[i].first.first;
+        int y = pos[i].first.second;
+        
+        int x2 = pos[i].second.first;
+        int y2 = pos[i].second.second;
+        
+        
+        cout << dp[x2][y2] - dp[x-1][y2] - dp[x2][y-1] + dp[x-1][y-1] << "\n";
+    }
+    
+    
+}
