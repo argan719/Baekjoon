@@ -1,0 +1,26 @@
+#include<iostream>
+#define MAX 1001
+using namespace std;
+
+int N;
+int arr[MAX];
+int dp[MAX];
+
+int main(void){
+    cin >> N;
+    
+    arr[0] = 0;
+    dp[0] = 0;
+    
+    for(int i=1;i<=N;i++){
+        cin >> arr[i];
+    }
+    
+    for(int i=1; i<=N;i++){
+        for(int k=0;k<=i;k++){
+            dp[i] = max(dp[i], dp[i-k] + arr[k]);
+        }
+    }
+
+    cout << dp[N];
+}
