@@ -1,0 +1,24 @@
+#include<iostream>
+#define MAX 10001
+using namespace std;
+
+int N, K;
+int arr[101];
+int dp[MAX];
+
+int main(void){
+    cin >> N >> K;
+    
+    for(int i=0;i<N;i++){
+        cin >> arr[i];
+    }
+    
+    dp[0] = 1;
+    for(int i=0;i<N;i++){
+        for(int k=arr[i]; k<=K; k++){
+            dp[k] = dp[k] + dp[k - arr[i]];
+        }
+    }
+    
+    cout << dp[K];
+}
