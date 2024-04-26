@@ -1,0 +1,25 @@
+#include<iostream>
+#define MAX 201
+using namespace std;
+
+int N,K;
+long long dp[MAX][MAX];
+
+int main(void){
+    cin >> N >> K;
+    
+    for(int j=0;j<=N;j++)
+        dp[1][j] = 1;
+        
+    
+    for(int i=2;i<=K;i++){
+        for(int j=0;j<=N;j++){
+            for(int n=0;n<=j;n++){
+                dp[i][j] += dp[i-1][n];
+            }
+            dp[i][j] = dp[i][j] % 1000000000;
+        }
+    }
+    
+    cout << dp[K][N];
+}
