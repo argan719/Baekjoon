@@ -16,10 +16,11 @@ Node node[MAX * MAX];
 
 int dx[] = { -1, 1, 0, 0 };
 int dy[] = { 0, 0, -1, 1 };
-void Enqueue(int x, int y) {
+void Enqueue(int x, int y, int cnt) {
     node[rear].x = x;
     node[rear].y = y;
     
+    matrix[x][y] = cnt + 1;
     rear++;
 }
 
@@ -30,37 +31,23 @@ Node Dequeue() {
 void bfs() {
     Node tmp;
     int r; int c;
-    int days;
 
     while (front != rear) {
         tmp = Dequeue();  // 마지막에 dequeue된 토마토가 가장 늦게 익은 토마토겠지
-        days = matrix[tmp.x][tmp.y] + 1;
         
         for (int i = 0; i < 4; i++) {
             r = tmp.x + dx[i];
             c = tmp.y + dy[i];
             if (r < 0 || r >= N || c < 0 || c >= M) continue;
             if (matrix[r][c] == 0) {
-                Enqueue(r, c);
-                matrix[r][c] = days;
-                //printf("\n%d\n", days);
+                Enqueue(r, c, matrix[tmp.x][tmp.y]);
                 zcnt--;
-                if (zcnt == 0) { printf("%d", days-1); return; }
+                if (zcnt == 0) { printf("%d", matrix[r][c]-1); return; }
             }
         }
     }
     printf("%d", -1);
     return;
-}
-
-void print(){
-    printf("\n");
-    for (int i = 0; i < N; i++) {
-        for (int k = 0; k < M; k++) {
-            printf("%d ", matrix[i][k]);
-        }
-        printf("\n");
-    }
 }
 
 int main() {
@@ -72,7 +59,7 @@ int main() {
         for (int k = 0; k < M; k++) {
             scanf("%d", &n);
             if (n == 0) zcnt++;
-            else if(n == 1) Enqueue(i,k);  // 익은 토마토 전부 enqueue
+            else if(n == 1) Enqueue(i, k, 0);  // 익은 토마토 전부 enqueue
             matrix[i][k] = n;
         }
     }
@@ -81,7 +68,5 @@ int main() {
         printf("%d", 0);
     }
     else bfs();
-    
-    
 
 }
