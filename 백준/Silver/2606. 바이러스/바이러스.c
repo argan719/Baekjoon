@@ -23,7 +23,7 @@ void DFS(int v) {
 
 int main(void) {
 	scanf("%d", &C);
-	scanf(" %d", &N);
+	scanf("%d", &N);
 
 	int f, t;
 	for (int i = 0; i < N; i++) {
