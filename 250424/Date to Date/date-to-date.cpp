@@ -22,7 +22,7 @@ int main() {
     }
     sum1 += d1;
 
-    cout << sum2 - sum1;
+    cout << sum2 - sum1 + 1;
 
     return 0;
 }
