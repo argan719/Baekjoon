@@ -1,6 +1,6 @@
 #include <iostream>
 #include <climits>
-#define MAX 2002
+#define MAX 2001
 using namespace std;
 
 int x1[3];
@@ -40,7 +40,7 @@ int main() {
     int flag = 0;
     for(int i=0; i<MAX ; i++){
         for(int k=0; k<MAX; k++){
-            if(matrix[i][k]) {
+            if(matrix[i][k] == 1) {
                 if(min_x > i) min_x = i;
                 if(min_y > k) min_y = k;
                 if(max_x < i) max_x = i;
