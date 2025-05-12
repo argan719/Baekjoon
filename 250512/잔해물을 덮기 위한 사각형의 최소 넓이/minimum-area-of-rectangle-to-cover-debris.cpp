@@ -37,10 +37,9 @@ int main() {
     int max_x = INT_MIN;
     int max_y = INT_MIN;
 
-    int cnt = 0;
     int flag = 0;
-    for(int i=x1[1]; i<x2[1]; i++){
-        for(int k=y1[1]; k<y2[1]; k++){
+    for(int i=0; i<MAX ; i++){
+        for(int k=0; k<MAX; k++){
             if(matrix[i][k]) {
                 if(min_x > i) min_x = i;
                 if(min_y > k) min_y = k;
