@@ -14,7 +14,7 @@ int main() {
     }
 
     int cnt = 0;
-    int max = -1;
+    int max = 1;
     cnt++;
     for(int i=1; i<N;i++){
         if(arr[i-1] == arr[i]) {
