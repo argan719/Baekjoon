@@ -35,10 +35,10 @@ int main() {
         cin >> t >> x >> y;
         handshake[t].x = x;
         handshake[t].y = y;
-        if((x == P || y == P) && t < min) min = t;
+        //if((x == P || y == P) && t < min) min = t;
     }
 
-    for(int i=min; i<=250; i++){
+    for(int i=0; i<=250; i++){
         if(developer[handshake[i].x].k_handshake > 0) {
             developer[handshake[i].x].k_handshake--;
 
