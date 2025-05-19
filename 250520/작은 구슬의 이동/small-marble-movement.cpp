@@ -3,7 +3,7 @@
 using namespace std;
 
 int dx[] = {-1, 0, 0, 1};
-int dy[] = {0, 1, -1, 0};  // 좌 상 하 우
+int dy[] = {0, -1, 1, 0};  // 좌 상 하 우
 
 int matrix[MAX][MAX];
 
