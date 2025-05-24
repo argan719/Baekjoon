@@ -56,15 +56,18 @@ int main() {
 
         r = N;
         if(K%N == 0) c = 1;
-        else c = 7 - (K % 6);
+        else c = N+1 - (K % N);
     }  // 왼쪽에서 들어오는 경우
     else{
         dir = 3;
 
         c = 1;
         if(K % N == 0) r = 1;
-        r = 7 - (K % 6);
+        r = N+1 - (K % N);
     }
+
+    //cout << "결정된 dir : " << dir << endl;
+
 
     while((r >= 1 && c >= 1 && r <= N && c <= N)){
 
@@ -115,12 +118,6 @@ int main() {
     }
     
     cout << cnt;
-
-
-
-
-
-
 
     return 0;
 }
