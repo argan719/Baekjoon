@@ -23,7 +23,7 @@ int main() {
     }
 
     int sum = 0;
-    for(int i=1;i<=max_pos - K + 1; i++){
+    for(int i=1;i<=max_pos - K; i++){
         sum = 0;
         for(int k=i; k<= i+K; k++){
             sum += arr[k];
