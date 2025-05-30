@@ -25,7 +25,7 @@ int main() {
 
     if(N < M) {
         cout << 0;
-        exit(1);
+        exit(0);
     }
 
     int i,j;
@@ -39,7 +39,6 @@ int main() {
     }
 
     cout << cnt;
-
 
     return 0;
 }
