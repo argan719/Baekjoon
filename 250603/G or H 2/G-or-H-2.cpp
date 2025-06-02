@@ -53,6 +53,7 @@ int main() {
         gcnt = 0;
         hcnt = 0;
         for(j=i+1; j <= max_x; j++){
+            if(arr[j] == 0) continue;
             
             for(k=i; k<=j; k++){
                 if(arr[k] == -1) gcnt++;
