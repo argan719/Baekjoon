@@ -50,9 +50,10 @@ int main() {
     int i,j,k;
 
     for(i=min_x; i < max_x; i++){
+        gcnt = 0;
+        hcnt = 0;
         for(j=i+1; j <= max_x; j++){
-            gcnt = 0;
-            hcnt = 0;
+            
             for(k=i; k<=j; k++){
                 if(arr[k] == -1) gcnt++;
                 else hcnt++;
