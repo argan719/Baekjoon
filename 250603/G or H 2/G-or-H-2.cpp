@@ -1,5 +1,6 @@
 #include <iostream>
 #include <climits>
+#include <algorithm>
 #define MAX 101
 using namespace std;
 
@@ -50,14 +51,16 @@ int main() {
     int i,j,k;
 
     for(i=min_x; i < max_x; i++){
-        gcnt = 0;
-        hcnt = 0;
+        if(arr[i] == 0) continue;
+        
         for(j=i+1; j <= max_x; j++){
             if(arr[j] == 0) continue;
-            
+            gcnt = 0;
+            hcnt = 0;
+
             for(k=i; k<=j; k++){
                 if(arr[k] == -1) gcnt++;
-                else hcnt++;
+                else if(arr[k] == 1) hcnt++;
             }
             if(hcnt == 0 || gcnt == 0 || gcnt == hcnt) {
                 size = j-i;
