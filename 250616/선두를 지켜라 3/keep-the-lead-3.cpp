@@ -34,7 +34,7 @@ int main() {
         cin >> b[i].u >> b[i].t;
 
         for(int k=0; k<b[i].t; k++){
-            arr_B[tot_t_b + k] = arr_A[tot_t_b + k -1] + b[i].u;
+            arr_B[tot_t_b + k] = arr_B[tot_t_b + k -1] + b[i].u;
         }
         tot_t_b += b[i].t;
     }
@@ -59,7 +59,7 @@ int main() {
 
     }
 
-    cout << cnt - 1;
+    cout << cnt;
 
     
     return 0;
