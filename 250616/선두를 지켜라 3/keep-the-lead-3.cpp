@@ -19,7 +19,6 @@ int main() {
     cin >> N >> M;
 
 
-
     int tot_t_a = 1;
     int tot_t_b = 1;
 
@@ -40,10 +39,11 @@ int main() {
         tot_t_b += b[i].t;
     }
 
+
     int flag = 0;
     int cnt = 0;
 
-    for(int i=1; i<=tot_t_a; i++){
+    for(int i=1; i<tot_t_a; i++){
         if(arr_A[i] > arr_B[i] && flag != 1) {
             flag = 1;
             cnt++;
@@ -60,7 +60,6 @@ int main() {
     }
 
     cout << cnt - 1;
-
 
     
     return 0;
