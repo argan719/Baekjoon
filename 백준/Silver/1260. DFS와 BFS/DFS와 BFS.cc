@@ -1,87 +1,71 @@
 #include<iostream>
 #include<queue>
+#include<cstring> // memset
+#include<vector>
+#define MAX 1001
 using namespace std;
-typedef struct graph {
-	int N;   // 정점개수
-	int M;    // 간선개수
-	int** matrix;       // 행렬
-}Graph;
-int *visited;
 
-void GInit(Graph* pGraph, int numberOfVertex) {
-	visited = (int*)malloc(sizeof(int) * numberOfVertex);
-	pGraph->matrix = (int **)malloc(sizeof(int *) * numberOfVertex);   // 행 동적할당
-	for (int i = 0; i < numberOfVertex; i++) {
-		pGraph->matrix[i] = (int *)malloc(sizeof(int) * numberOfVertex);  // 열 동적할당
-		for (int k = 0; k < numberOfVertex; k++) {
-			pGraph->matrix[i][k] = 0;
-			visited[k] = 0;
-		}
-	}
+int N, M, V;
+int matrix[MAX][MAX];
+int visited[MAX];
+vector<int> dfs_result;
+vector<int> bfs_result;
+
+void dfs(int v){
+    visited[v] = 1;  // 방문 표시
+    dfs_result.push_back(v); // 방문 결과 삽입
+    
+    for(int i=1; i<=N; i++){  // 인접하고, 미방문이면 dfs 호출
+        if(matrix[v][i] && !visited[i]) dfs(i);
+    }
 }
 
-void GClear(Graph* pGraph) {
-	for (int i = 1; i < pGraph->N; i++) {
-		visited[i] = 0;
-	}
+void bfs(){
+    queue<int> q;
+    q.push(V); // 시작 정점 삽입
+    visited[V] = 1;
+    
+    while(!q.empty()){
+        // 맨 앞 요소 리턴
+        auto front = q.front();
+        // 삭제 (pop은 반환값 없음)
+        q.pop();
+        // 방문 결과 삽입
+        bfs_result.push_back(front);
+        
+        for(int i=1; i<=N; i++){
+            if(matrix[front][i] && !visited[i]){
+                q.push(i);
+                visited[i] = 1;
+            }
+        }
+    }
 }
 
-void GAdd(Graph* pGraph, int from, int to) {
-	if (!pGraph->matrix[from][to]) {
-		pGraph->matrix[from][to] = 1;
-		pGraph->matrix[to][from] = 1;
-	}
-}
-
-void DFS(Graph g, int V) {
-	visited[V] = 1;
-	cout << V << " ";
-
-	for (int k = 1; k < g.N; k++) {
-		if (g.matrix[V][k] && !visited[k]) {
-			DFS(g, k);
-		}
-	}
-}
-
-void BFS(Graph g, int V) {
-	visited[V] = 1;
-	queue<int> q;
-	q.push(V);
-	int f;
-
-	while(!q.empty()) {
-		f = q.front();
-		q.pop();
-		cout << f << " ";
-		for (int k = 1; k < g.N; k++) {
-			if (g.matrix[f][k] && !visited[k]) {
-				visited[k] = 1;
-				q.push(k);
-			}
-		}
-	}
-
-}
-
-int main(void) {
-	int N, M, V;
-	Graph graph;
-
-	cin >> N >> M >> V;
-
-	graph.N = N + 1;
-	graph.M = M;
-	GInit(&graph, N+1);
-	int from, to;
-	for (int i = 0; i < M; i++) {
-		cin >> from >> to;
-		GAdd(&graph, from, to);
-	}
-
-	DFS(graph, V);
-	cout << "\n";
-	GClear(&graph);
-	BFS(graph, V);
-
+int main(void){
+    cin >> N >> M >> V;
+    
+    int a, b;
+    for(int i=0; i<M; i++){
+        cin >> a >> b;
+        // 양방향 인접행렬 생성
+        matrix[a][b] = 1;
+        matrix[b][a] = 1;
+    }
+    
+    dfs(V);
+    // visited 배열 초기화
+    memset(visited, 0, sizeof(int)*MAX);
+    bfs();
+    
+    // dfs 결과 출력
+    for(auto it = dfs_result.begin(); it != dfs_result.end(); it++){
+        cout << *it << " ";
+    }
+    cout << endl;
+    // bfs 결과 출력
+    for(auto it = bfs_result.begin(); it != bfs_result.end(); it++){
+        cout << *it << " ";
+    }
+    
 }
