@@ -1,0 +1,87 @@
+#include<iostream>
+#include<queue>
+using namespace std;
+typedef struct graph {
+	int N;   // 정점개수
+	int M;    // 간선개수
+	int** matrix;       // 행렬
+}Graph;
+int *visited;
+
+void GInit(Graph* pGraph, int numberOfVertex) {
+	visited = (int*)malloc(sizeof(int) * numberOfVertex);
+	pGraph->matrix = (int **)malloc(sizeof(int *) * numberOfVertex);   // 행 동적할당
+	for (int i = 0; i < numberOfVertex; i++) {
+		pGraph->matrix[i] = (int *)malloc(sizeof(int) * numberOfVertex);  // 열 동적할당
+		for (int k = 0; k < numberOfVertex; k++) {
+			pGraph->matrix[i][k] = 0;
+			visited[k] = 0;
+		}
+	}
+}
+
+void GClear(Graph* pGraph) {
+	for (int i = 1; i < pGraph->N; i++) {
+		visited[i] = 0;
+	}
+}
+
+void GAdd(Graph* pGraph, int from, int to) {
+	if (!pGraph->matrix[from][to]) {
+		pGraph->matrix[from][to] = 1;
+		pGraph->matrix[to][from] = 1;
+	}
+}
+
+void DFS(Graph g, int V) {
+	visited[V] = 1;
+	cout << V << " ";
+
+	for (int k = 1; k < g.N; k++) {
+		if (g.matrix[V][k] && !visited[k]) {
+			DFS(g, k);
+		}
+	}
+}
+
+void BFS(Graph g, int V) {
+	visited[V] = 1;
+	queue<int> q;
+	q.push(V);
+	int f;
+
+	while(!q.empty()) {
+		f = q.front();
+		q.pop();
+		cout << f << " ";
+		for (int k = 1; k < g.N; k++) {
+			if (g.matrix[f][k] && !visited[k]) {
+				visited[k] = 1;
+				q.push(k);
+			}
+		}
+	}
+
+}
+
+int main(void) {
+	int N, M, V;
+	Graph graph;
+
+	cin >> N >> M >> V;
+
+	graph.N = N + 1;
+	graph.M = M;
+	GInit(&graph, N+1);
+	int from, to;
+	for (int i = 0; i < M; i++) {
+		cin >> from >> to;
+		GAdd(&graph, from, to);
+	}
+
+	DFS(graph, V);
+	cout << "\n";
+	GClear(&graph);
+	BFS(graph, V);
+
+}
