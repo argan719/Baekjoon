@@ -1,41 +1,40 @@
 #include<iostream>
-#include<vector>
-#define MAX 100002
+#include<queue>
+#define MAX 100001
 using namespace std;
+
 int N;
-vector<int> map[MAX];
+vector<int> adj[MAX];
 int visited[MAX];
-long result[MAX];
 
-void dfs(int v) {
-	if (!visited[v]) {
-		visited[v] = 1;
-
-		for (int i = 0; i < map[v].size(); i++) {
-			if (result[map[v][i]] == 0) {
-				result[map[v][i]] = v;
-				dfs(map[v][i]);
-			}
-		}
-	}
+void bfs(){
+    queue<int> q;
+    q.push(1);
+    
+    while(!q.empty()){
+        auto cur = q.front();
+        q.pop();
+        
+        for(auto idx : adj[cur]){
+            if(visited[idx] != 0) continue;
+            visited[idx] = cur;
+            q.push(idx);
+        }
+    }
+    
 }
 
-int main(void) {
-	cin >> N;
-
-	int x, y;
-	for (int i = 1; i < N; i++) {
-		cin >> x >> y;
-		map[x].push_back(y);
-		map[y].push_back(x);
-	}
-
-	for (int i = 1; i <= N; i++) {
-		dfs(i);
-	}
-	
-	for (int i = 2; i <= N; i++) {
-		cout << result[i] << "\n";
-	}
-
+int main(void){
+    int a,b;
+    cin >> N;
+    
+    for(int i=1; i<=N-1; i++){
+        cin >> a >> b;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    bfs();
+    for(int i=2; i<=N; i++){
+        cout << visited[i] << "\n";
+    }
 }
