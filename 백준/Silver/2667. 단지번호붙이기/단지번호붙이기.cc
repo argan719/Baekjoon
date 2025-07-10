@@ -1,55 +1,67 @@
 #include<iostream>
-#include<string>
+#include<queue>
 #include<algorithm>
 #include<vector>
+#include<cstring>
 #define MAX 30
 using namespace std;
 
-int N;
 int matrix[MAX][MAX];
-int visited[MAX][MAX];
+int N;
+int dr[] = {-1, 1, 0, 0};
+int dc[] = {0, 0, -1, 1};
 
-int cnt;
-int dfs(int x, int y) {
-	if (x < 0 || x > N || y < 0 || y > N) return 0;
 
-	if (!visited[x][y] && matrix[x][y]) {
-		cnt++;  // 단지 수 
-		visited[x][y] = 1;
-
-		dfs(x - 1, y);  // 좌
-		dfs(x + 1, y);  // 우
-		dfs(x, y - 1);  // 하
-		dfs(x, y + 1);  // 상
-
-	}
-	return cnt;
+int bfs(int r, int c){
+    queue<pair<int, int>> q;
+    q.push(make_pair(r, c));
+    matrix[r][c] = 0;
+    int nr, nc;
+    int cnt = 1;
+    
+    while(!q.empty()){
+        pair<int, int> cur = q.front();
+        q.pop();
+        
+        for(int i=0; i<4; i++){
+            nr = cur.first + dr[i];
+            nc = cur.second + dc[i];
+            
+            if(nr < 0 || nc < 0 || nr >= N || nc >= N) continue;
+            if(matrix[nr][nc]!=1) continue;
+            
+            matrix[nr][nc] = 0;
+            q.push(make_pair(nr,nc));
+            cnt++;
+        }
+    }
+    return cnt;
 }
 
-int main(void) {
-	cin >> N;
-	string s;
-	vector<int> house;
 
-	// 2차원 배열에 0,1 숫자로 저장
-	for (int i = 0; i < N; i++) {
-		cin >> s;
-		for (int k = 0; k < N; k++)
-			matrix[i+1][k+1] = s[k] - '0';
-	}
-
-	int t;
-	for (int i = 1; i <= N; i++) {
-		for (int k = 1; k <= N; k++) {
-			cnt = 0;
-			t = dfs(i, k);
-			if (t != 0) house.push_back(t);
-		}
-	}
-
-	cout << house.size() << endl;
-	sort(house.begin(), house.end());
-	for (int i = 0; i < house.size(); i++) {
-		cout << house[i] << endl;
-	}
+int main(void){
+    cin >> N;
+    string str;
+    vector<int> result;
+    
+    for(int i=0; i<N; i++){
+        cin >> str;
+        for(int j=0; j<N; j++){
+            matrix[i][j] = str[j] - '0';
+        }
+    }
+    
+    for(int i=0; i<N;i++){
+        for(int j=0; j<N; j++){
+            if(matrix[i][j] == 1) {
+                result.push_back(bfs(i, j));
+            }
+        }
+    }
+    cout << result.size() << endl;
+    sort(result.begin(), result.end());
+    for(auto n : result){
+        cout << n << endl;
+    }
+    
 }
