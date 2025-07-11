@@ -1,13 +1,15 @@
 #include<iostream>
 #include<vector>
-#include<cstring>
 #include<queue>
+#include<algorithm>
+#include<cstring>
 #define MAX 10001
 using namespace std;
 
-vector<int> arr[MAX];
-int visited[MAX];
 int N, M;
+vector<int> vec[MAX];
+int visited[MAX];
+int result[MAX];
 
 int bfs(int n){
     queue<int> q;
@@ -15,43 +17,46 @@ int bfs(int n){
     visited[n] = 1;
     int cnt = 0;
     
+ //   for(auto cur: vec[n]){
+  //      q.push(cur);
+   //     cnt++;
+   //     visited[cur] = 1;
+  //  }
+    
     while(!q.empty()){
         auto cur = q.front();
         q.pop();
         
-        for(int k=0; k<arr[cur].size(); k++){
-            if(!visited[arr[cur][k]]) {
-                visited[arr[cur][k]] = 1;//빼먹지말것
-                q.push(arr[cur][k]);
+        for(auto a : vec[cur]){
+            if(!visited[a]) {
+                visited[a] = 1;
+                q.push(a);
                 cnt++;
             }
         }
-        
     }
     return cnt;
 }
 
-int main(void){
+int main(void) {
     cin >> N >> M;
     int A, B;
-    int result[MAX];
+    
+    int max_n = 0;
     int r;
     
     for(int i=0; i<M; i++){
         cin >> A >> B;
-        arr[B].push_back(A);
+        vec[B].push_back(A);
     }
-    int max_val = 0;
-    
     for(int i=1; i<=N; i++){
-        r = bfs(i);
+        result[i] = bfs(i);
+        if(max_n < result[i]) max_n = result[i];
         memset(visited, 0, sizeof(visited));
-        max_val = max(max_val, r);
-        result[i] = r;
     }
     
     for(int i=1; i<=N; i++){
-        if(result[i] == max_val) cout << i << " ";
+        if(result[i] == max_n) cout << i << " ";
     }
     
 }
