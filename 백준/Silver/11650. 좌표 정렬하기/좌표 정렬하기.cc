@@ -1,36 +1,25 @@
-#include<bits/stdc++.h>
-#define MAX 100000
+// 벡터 pair 로 다시 풀기
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#define MAX 100001
 using namespace std;
 
-typedef struct{
-    int x;
-    int y;
-}ST;
-
-bool compare(ST a, ST b){
-    if(a.x < b.x) return true;
-    else if(a.x > b.x) return false;
-    else {
-        if(a.y < b.y) return true;
-        else return false;
-    }
-}
-
+int N;
+//vector<pair<int,int>> vec(MAX);
+vector<pair<int,int>> vec;
 
 int main(void){
-    int N;
     cin >> N;
-    
-    ST pos;
-    vector<ST> vec;
-    for(int i=0;i<N;i++){
-        cin >> pos.x >> pos.y;
-        vec.push_back(pos);
+    int first, second;
+    for(int i=0; i<N; i++){
+        cin >> first >> second;
+        vec.push_back(make_pair(first, second));
     }
-    sort(vec.begin(), vec.end(), compare);
+    sort(vec.begin(), vec.end());
     
-    for(int i=0;i<vec.size();i++){
-        cout << vec[i].x << " " << vec[i].y << "\n";
+    for(auto cur: vec){
+        cout << cur.first << " " << cur.second << "\n";
     }
-    
 }
