@@ -1,27 +1,30 @@
+// 크기 10으로 고정
+// x, y 맨 왼쪽 맨 아래 좌표
+
 #include<iostream>
-#define MAX 100
+#define MAX 101
 using namespace std;
 
 int matrix[MAX][MAX];
-
 int main(void){
-    int c;
-    int x,y;
-    cin >> c;
-    
+    int N;
     int cnt = 0;
-    for(int i=0;i<c;i++){
+    int x, y;
+    cin >> N;
+    for(int i=0; i<N; i++){
         cin >> x >> y;
         
-        for(int i=x; i<x+10; i++){
-            for(int k=y; k<y+10; k++){
-                if((0<=i && i<= 99) && (0<=k && k<=99) && matrix[i][k] == 0) {
-                    matrix[i][k] = 1;
-                    cnt++;
-                }
+        for(int r=x; r< x+10; r++){
+            for(int c=y; c<y+10; c++){
+                matrix[r][c] = 1;
             }
         }
     }
     
+    for(int i=0; i<100; i++){
+        for(int j=0; j<100; j++){
+            if(matrix[i][j]) cnt++;
+        }
+    }
     cout << cnt;
 }
