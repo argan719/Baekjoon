@@ -22,14 +22,13 @@ int main(void){
         }
     }
     
-    for(int i=0; i<=99; i++){
-        for(int j=0; j<= 99; j++){
+    for(int i=1; i<=99; i++){
+        for(int j=1; j<= 99; j++){
             if(matrix[i][j] == 0) continue;
             
             for(int k=0;k<4; k++){
                 nr = i + dr[k];
                 nc = j + dc[k];
-                //if(nr >=0 && nc >=0 && nr <=99 && nc <=99)
                 if(matrix[nr][nc] == 0) cnt++;
             }
         }
