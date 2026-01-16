@@ -1,79 +1,79 @@
+// 1260 인접행렬 - 2차원 배열 대신 벡터 사용하는 코드로 리펙토링
 #include<iostream>
 #include<queue>
-#include<cstring>
 #include<vector>
+#include<algorithm>
+#include<cstring>
 #define MAX 1001
 
 using namespace std;
-
 int N, M, V;
-int matrix[MAX][MAX];
+
+vector<int> ans_bfs;
+vector<int> ans_dfs;
+vector<int> adj[MAX];  // 벡터 배열 선언
+
 int visited[MAX];
 
-vector<int> bfs_result;
-vector<int> dfs_result;
-
-void bfs(){
-    queue<int> q;   // [1]
-    q.push(V);  // [2] 시작정점 삽입
-    visited[V] = 1;
+void dfs(int n){
+    visited[n] = 1;
+    ans_dfs.push_back(n);
     
-    
-    while(!q.empty()) {  // [3] queue에 데이터 있는 동안
-        // 맨 앞 요소 리턴
-        auto front = q.front();
-        // 삭제 - pop은 리턴값 없음
-        q.pop();        // 데이터 한 개 꺼냄
-        // 방문 결과 삽입
-        bfs_result.push_back(front);
+    // r,c의 범위는 1부터 N
+    for(int cur : adj[n]){
+        if(visited[cur]) continue;
         
-        // 정점 번호는 1부터 N까지이다.
-        for(int i=1; i<=N; i++){  // 연결된 노드 or 방향 반복처리
-            if(matrix[front][i] && !visited[i]) {  // 범위 내 + 미방문 + (조건 맞으면)
-                q.push(i);       // 단위작업 (해야할 일)
-                visited[i] = 1;
-            }
+        dfs(cur);
+    }
+}
+
+void bfs(int v) {
+    queue<int> q;
+    
+    // push 할 때 작업하기
+    q.push(v);
+    visited[v] = 1;
+    ans_bfs.push_back(v);
+    
+    int cur;
+    
+    while(!q.empty()){
+        cur = q.front();
+        q.pop();
+        
+        for(int n : adj[cur]){
+            if(visited[n]) continue;  // 범위내 미방문 조건 맞으면
+            
+            // push 할 때 작업하기
+            q.push(n);
+            visited[n] = 1;
+            ans_bfs.push_back(n);
         }
     }
-    
-    
 }
 
-void dfs(int v){
-    visited[v] = 1;  // 방문표시
-    dfs_result.push_back(v);
-    
-    // 정점 번호는 1부터 N까지이다.
-    for(int i=1; i<=N; i++){
-        if(matrix[v][i] && !visited[i]) dfs(i);  // 인접하고 미방문이면 재귀호출
-    }
-}
-
-int main(void)
-{
+int main(){
     cin >> N >> M >> V;
     
-    int r, c;
-    // 양방향 인접행렬 생성
+    int r,c;
     for(int i=0; i<M; i++){
         cin >> r >> c;
-        matrix[r][c] = 1;
-        matrix[c][r] = 1;
+        adj[r].push_back(c);
+        adj[c].push_back(r);
     }
+    // 단, .. 정점 번호가 작은 것을 먼저 방문하고
+    // -> sort는 필수로 해야 하는 것
+    for(int i=1; i<=N; i++){
+        sort(adj[i].begin(), adj[i].end());
+    }
+    
     
     dfs(V);
-    // visited 배열 초기화
     memset(visited, 0, sizeof(int)*MAX);
+    bfs(V);
     
-    bfs();
-    
-    // DFS 결과 출력
-    for(auto cur : dfs_result) {
-        cout << cur << " ";
-    }
+    for(int ans : ans_dfs) cout << ans << " ";
     cout << endl;
-    // BFS 결과 출력
-    for(auto cur : bfs_result) {
-        cout << cur << " ";
-    }
+    for(int ans : ans_bfs) cout << ans << " ";
+    
 }
