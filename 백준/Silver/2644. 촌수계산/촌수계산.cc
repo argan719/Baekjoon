@@ -1,4 +1,3 @@
-// 2644
 #include<iostream>
 #include<vector>
 #include<queue>
@@ -8,7 +7,6 @@
 using namespace std;
 int n, m;
 int a, b;
-//int result = -1;
 int step;
 
 vector<int> adj[MAX];
@@ -18,17 +16,20 @@ int visited[MAX];
 int bfs(){
     queue<int> q;
     int len;
+    
     q.push(a);
     visited[a] = 1;
     
     while(!q.empty()){
         len = q.size();
         
+        // 현재 depth만 돌면서 본인 자식 노드 push 하고 끝나도록 - step++
         for(int i=0; i<len; i++){
             int cur = q.front();
             q.pop();
             
-            if(cur == b) return 1;
+            // 정답 찾으면 바로 리턴.
+            if(cur == b) return step;
             
             for(auto n : adj[cur]){
                 if(visited[n]) continue;
@@ -39,8 +40,8 @@ int bfs(){
         }
         step++;
     }
-    // 못 찾은 경우 = 메인에서 -1을 출력해야함.
-    return 0;
+    
+    return -1;
 }
 
 int main(){
@@ -56,9 +57,7 @@ int main(){
         adj[y].push_back(x);
     }
     
-    // depth result 처리 필요.
-    if(bfs()) cout << step;
-    else cout << -1;
+    cout << bfs();
     
     return 0;
 }
