@@ -1,47 +1,50 @@
-// BFS로 set 써서 다시 풀기
-// long 써야 함 주의
 #include<iostream>
-#include<queue>
+#include<cstring>
 #include<set>
+#include<queue>
+#include<vector>
 using namespace std;
-
 typedef long long ll;
+
 ll A, B;
+set<ll> v;
 
 int bfs(){
-    int cnt = 1;
+    int step = 1;
+    int len;
     queue<ll> q;
-    set<ll> s;
     q.push(A);
-    s.insert(A);  // 방문 표시
+    v.insert(A); // 방문표시
     
     while(!q.empty()){
-        int len = q.size();
+        len = q.size();
         
-        for(int k=0; k<len; k++){ // 매번 이 만큼만 돌아야 연산 수행 개수가 됨. (본인 한 단계 밑에만 (한번에)전부 pop하는 것) - 그게 전부 끝나야 step 증가
+        for(int i=0; i<len; i++){
+            
             auto cur = q.front();
             q.pop();
             
-            if(cur == B) {
-                return cnt;
-            }
+            // 정답처리는 이곳에서
+            if(cur == B) return step;
+            if(cur > B) continue;
             
-            for(auto val : {cur*2, cur*10 + 1}) {
-                if(val > B || s.find(val) != s.end()) continue;
-                            
-                q.push(val);
-                s.insert(val);
+            for(auto n : {cur*2, cur*10+1}){
+                // 미방문 조건 맞으면
+                if(n > B || v.find(n) != v.end()) continue;
+                
+                // 단위작업
+                q.push(n);
+                v.insert(n);
             }
         }
-        
-        cnt++;
+        step++;
     }
     return -1;
 }
 
-
-int main(void){
+int main(){
     cin >> A >> B;
-    if(A > B) { cout << -1; exit(0); }
+    
     cout << bfs();
+    return 0;
 }
