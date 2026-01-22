@@ -1,70 +1,83 @@
 #include<iostream>
+#include<queue>
+#include<cstring>
+#include<algorithm>
 #define MAX 1001
 using namespace std;
 
-typedef struct color{
-    int r; 
-    int g;
-    int b;
-}Color;
-
-int N, M;
 int T;
-Color input[MAX];
+int R, C; // N, M
+
 int matrix[MAX][MAX];
-int cnt;
+int v[MAX][MAX];
 
 int dr[] = {-1, 1, 0, 0};
 int dc[] = {0, 0, -1, 1};
 
-void dfs(int r, int c){
-    matrix[r][c] = 1;
-    int next_r = 0;
-    int next_c = 0;
+int preprocess(){
     
-    for(int i=0; i<4; i++){
-        next_r = r + dr[i];
-        next_c = c + dc[i];
-        
-        if(next_r < 0 || next_c < 0 || next_r >= N || next_c >= M) continue;
-        if(matrix[next_r][next_c] == 255) dfs(next_r, next_c);
+    for(int i=0; i<R; i++){
+        for(int j=0; j<C; j++){
+            if(matrix[i][j] >= T) matrix[i][j] = 255;
+            else if(matrix[i][j] < T) matrix[i][j] = 0;
+        }
     }
+    return 1;
 }
 
-int main(void){
-    cin >> N >> M;
-    int sum = 0;
+int bfs(int r, int c){
+    queue<pair<int, int>> q;
+    int nr, nc;
+    // 단위작업
+    q.push(make_pair(r,c));
+    v[r][c] = 1;
     
-    for(int i=0; i<N; i++){
-        for(int j=0; j<M; j++){
-            cin >> input[j].r >> input[j].g >> input[j].b;
-            sum += (input[j].r + input[j].g + input[j].b);
-            sum = sum/3;
-            matrix[i][j] = sum;
-            sum = 0;
+    while(!q.empty()){
+        auto cur = q.front();
+        q.pop();
+        
+        // 연결 4방향
+        for(int i=0; i<4; i++){
+            nr = cur.first + dr[i];
+            nc = cur.second + dc[i];
+            
+            if(nr < 0 || nr >= R || nc < 0 || nc >= C) continue;
+            if(v[nr][nc] || matrix[nr][nc] != 255) continue;
+            
+            // 조건 맞으면 단위작업
+            q.push(make_pair(nr, nc));
+            v[nr][nc] = 1;
         }
     }
+    return 1;
+}
+
+int main(){
+    int cnt = 0;
+    int r, g, b;
+    
+    cin >> R >> C;
+    for(int i=0; i<R; i++){
+        for(int j=0; j<C; j++){
+            cin >> r >> g >> b;
+            matrix[i][j] = (r+g+b)/3;
+        }
+    }
+    
     cin >> T;
+    // 픽셀 값 전처리 - 255 or 0
+    preprocess();
     
-    for(int i=0; i<N; i++){
-        for(int j=0; j<M; j++){
-            if(matrix[i][j] >= T) matrix[i][j] = 255;
-            else matrix[i][j] = 0;
-        }
-    }
-    
-    
-    for(int i=0; i<N; i++){
-        for(int j=0; j<M; j++){
-            if(matrix[i][j] == 1) continue;
-            if(matrix[i][j] == 255) {
-                dfs(i, j);
-                cnt++;
-            }
+    for(int i=0; i<R; i++){
+        for(int j=0; j<C; j++){
+            if(matrix[i][j] != 255 || v[i][j]) continue;
+            //if(matrix[i][j] == 255 && !v[i][j])
+            bfs(i, j);  // visited를 채워가는 역할만 수행.
+            cnt++;
         }
     }
     
     cout << cnt;
-
-
+    
+    return 0;
 }
