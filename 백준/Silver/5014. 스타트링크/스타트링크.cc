@@ -1,47 +1,45 @@
 #include<iostream>
-#define MAX 1000001
+#include<cstring>
 #include<queue>
-#include<map>
+#define MAX 1000001
 using namespace std;
 
-int F, S, G, U, D;
-int visited[MAX];
+int F,S,G,U,D;
+int v[MAX];
 
-void bfs(){
+int bfs(){
     queue<int> q;
-    map<int, int> m;
     q.push(S);
-    visited[S] = 1;
-    m[S] = 0;
-    int up, down;
+    v[S] = 1;
     
     while(!q.empty()){
-        auto a = q.front();
+        auto cur = q.front();
         q.pop();
+        // 정답처리는 이곳에서
+        if(cur == G) return v[cur] - 1;
         
-        if(a == G){
-            cout << m[a];
-            return;
-        }
-        
-        up = a + U;
-        down = a - D;
-        if(1<=up && up <= F && !visited[up]) { 
-            q.push(up); 
-            visited[up] = 1; 
-            m[up] = m[a] + 1;
-        }
-        if(1<= down && down <= F && !visited[down]) { 
-            q.push(down); 
-            visited[down] = 1; 
-            m[down] = m[a] + 1;
+        // 연결 2방향
+        for(auto n : {U, -D}){
+            // 범위내 미방문 조건맞으면
+            if(cur + n >= 1 && cur + n <= F && !v[cur+n]) {
+                q.push(cur+n);
+                v[cur+n] = v[cur]+1;
+            }
         }
     }
-    cout << "use the stairs";
+    // 도달못한 경우
+    return -1;
 }
 
-int main(void){
+int main(){
     cin >> F >> S >> G >> U >> D;
     
-    bfs();
+    if((U == 0 && S < G) || (D == 0 && S > G)) cout << "use the stairs";
+    else {
+        int r = bfs();
+        if(r == -1) cout << "use the stairs";
+        else cout << r;
+    }
+        
+    return 0;
 }
