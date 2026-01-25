@@ -19,11 +19,11 @@ int bfs(){
         if(cur == G) return v[cur] - 1;
         
         // 연결 2방향
-        for(auto n : {U, -D}){
+        for(int n : {cur + U, cur - D}){
             // 범위내 미방문 조건맞으면
-            if(cur + n >= 1 && cur + n <= F && !v[cur+n]) {
-                q.push(cur+n);
-                v[cur+n] = v[cur]+1;
+            if(n >= 1 && n <= F && !v[n]) {
+                q.push(n);
+                v[n] = v[cur] + 1;
             }
         }
     }
