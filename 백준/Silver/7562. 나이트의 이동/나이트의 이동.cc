@@ -1,63 +1,62 @@
 #include<iostream>
-#include<queue>
 #include<cstring>
-#include<map>
+#include<vector>
+#include<queue>
 #define MAX 301
 using namespace std;
 
-int matrix[MAX][MAX]; 
+vector<int> ans;
+//int matrix[MAX][MAX];
+int v[MAX][MAX];
+
+int T;
 int N;
-int start_r, start_c;
-int end_r, end_c;
-vector<int> result;
+int sr,sc, er,ec;  // sr,sc에서 출발하여 er,ec에 도착
 
-int dr[] = {-2, -2, -1, 1, 2, 2, 1, -1};
-int dc[] = {-1, 1, 2, 2, 1, -1, -2, -2};
+int dr[] = {-2, -2, -1, -1, 1, 1, 2, 2};
+int dc[] = {-1, 1, -2, 2, -2, 2, -1, 1};
 
-void bfs(){
+int bfs(){
     queue<pair<int,int>> q;
-    q.push(make_pair(start_r, start_c));
-    matrix[start_r][start_c] = 1; // 방문 표시 && depth 정보
-    int next_r, next_c;
+    int nr, nc;
+    q.push(make_pair(sr, sc));
+    v[sr][sc] = 1;
     
     while(!q.empty()){
-        auto a = q.front();
+        auto cur = q.front();
         q.pop();
-        if(a.first == end_r && a.second == end_c) {
-            result.push_back(matrix[a.first][a.second] - 1);
-        }
         
+        // 정답처리는 이곳에서
+        if(cur.first == er && cur.second == ec) return v[cur.first][cur.second]-1;
+        // 8방향 연결
         for(int i=0; i<8; i++){
-            next_r = a.first + dr[i];
-            next_c = a.second + dc[i]; 
+            nr = cur.first + dr[i];
+            nc = cur.second + dc[i];
             
-            if(!matrix[next_r][next_c]){
-                if(next_r >= 0 && next_c >= 0 && next_r < N && next_c < N) {
-                    q.push(make_pair(next_r, next_c));
-                    matrix[next_r][next_c] = matrix[a.first][a.second] + 1;
-                }
-            }
+            if(nr < 0 || nr >=N || nc < 0 || nc >= N) continue;
+            if(v[nr][nc] !=0) continue;
+            
+            // 범위내 미방문 조건 맞으면 단위작업
+            q.push(make_pair(nr,nc));
+            v[nr][nc] = v[cur.first][cur.second] + 1;
         }
     }
-    
+    return -1;
 }
 
-int main(void){
-    int T;
+int main(){
     cin >> T;
-    for(int i=0; i<T; i++){
+    
+    for(int t=0; t<T; t++){
         cin >> N;
-        cin >> start_r >> start_c;
-        cin >> end_r >> end_c;
-        
-        bfs();
-        // matrix init
-        for(int i=0; i<MAX; i++)
-            memset(matrix[i], 0, sizeof(int)*MAX);
+        cin >> sr >> sc;
+        cin >> er >> ec;
+        ans.push_back(bfs());
+        for(int i=0; i<N; i++) memset(v[i], 0, sizeof(int)*N);
     }
     
-    for(int i=0; i<T; i++){
-        cout << result[i] << endl;
+    for(auto n : ans){
+        cout << n << "\n";
     }
-    
+    return 0;
 }
