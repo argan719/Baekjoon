@@ -1,44 +1,39 @@
 #include<iostream>
-#include<vector>
 #include<queue>
+#include<vector>
 #include<cstring>
-#include<climits>
 #define MAX 100001
 using namespace std;
 
-int visited[MAX];
+int v[MAX];
 int N, K;
 
 int bfs(){
     queue<int> q;
+    // 단위작업
     q.push(N);
-    visited[N] = 1;
-    int step = 0;
+    v[N] = 0;
     
     while(!q.empty()){
-        int len = q.size();
+        auto cur = q.front();
+        q.pop();
         
-        for(int i=0; i<len; i++){
-            auto cur = q.front();
-            q.pop();
+        if(cur == K) return v[cur];
         
-            if(cur == K){
-                cout << step;
-                return 0;
-            }
+        for(auto n : {cur-1, cur+1, cur*2}){
+            // 범위 체크 먼저 한 뒤 방문처리 해야함!!!
+            if(n < 0 || n >= MAX || v[n] !=0) continue; // 범위!!
             
-            for(auto n : {cur-1, cur+1, cur*2}){
-                if(n < 0 || n > MAX-1) continue;
-                if(visited[n]) continue;
-                visited[n] = 1;
-                q.push(n);
-            }
+            // 조건 맞으면 단위작업
+            q.push(n);
+            v[n] = v[cur]+1;
         }
-        step++;
     }
-    return -1;
+    return 0; // 올일 없지만
 }
-int main(void){
+
+int main(){
     cin >> N >> K;
-    bfs();
+    cout << bfs();
+    return 0;
 }
