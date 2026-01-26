@@ -1,71 +1,74 @@
 #include<iostream>
 #include<queue>
-#include<vector>
 #include<cstring>
-#include<algorithm>
 #define MAX 101
 using namespace std;
-
 int N;
 int matrix[MAX][MAX];
-int visited[MAX][MAX];
-int max_value = 0;
+int v[MAX][MAX];
+
 int dr[] = {-1, 1, 0, 0};
 int dc[] = {0, 0, -1, 1};
 
-void bfs(int height, int r, int c){
+void bfs(int r, int c){
     queue<pair<int, int>> q;
+    int nr,nc;
+    // 단위작업
     q.push(make_pair(r, c));
-    visited[r][c] = 1;
-    int nr, nc;
+    v[r][c] = 1;
     
     while(!q.empty()){
-        pair<int, int> cur = q.front();
+        auto cur = q.front();
         q.pop();
         
+        // 연결 4방향
         for(int i=0; i<4; i++){
             nr = cur.first + dr[i];
             nc = cur.second + dc[i];
             
-            if(nr < 0 || nc < 0 || nr >=N || nc >= N) continue;
-            if(visited[nr][nc]) continue;
-            if(matrix[nr][nc] <= height) continue; // 조건추가
-            
+            if(nr < 0 || nr >=N || nc < 0 || nc >= N) continue;
+            if(v[nr][nc] !=0) continue;
+            // 조건 맞으면 단위작업.
             q.push(make_pair(nr, nc));
-            visited[nr][nc] = 1;
+            v[nr][nc] = 1;
         }
-        
     }
-    
 }
 
-int main(void){
-    cin >> N;
-    int cnt = 0;
-    int result = 1;
+int main(){
+    int max_h = 0;
+    int result = 0;
+    int h;
+    int cnt;
     
+    cin >> N;
     for(int i=0; i<N; i++){
         for(int j=0; j<N; j++){
-            cin >> matrix[i][j];
-            if(max_value < matrix[i][j]) max_value = matrix[i][j];
+            cin >> h;
+            matrix[i][j] = h;
+            if(max_h < h) max_h = h;
         }
     }
     
-    for(int height = max_value-1; height >=1; height--){
+    for(int H=100; H >=0; H--){ // >= 0??
+        // 매번 초기화 필요 변수
+        cnt = 0;
+        memset(v, 0, sizeof(v));
+        
+        for(int i=0; i<N; i++){
+            for(int j=0; j<N; j++){ // 잠김 표시
+                if(matrix[i][j] <= H) v[i][j] = 1;
+            }
+        }
+        
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){
-                if(matrix[i][j] > height && !visited[i][j]) {
-                    bfs(height, i, j);
-                    cnt++;
-                } 
+                if(v[i][j] == 0) { bfs(i,j); cnt++;}
             }
         }
         if(result < cnt) result = cnt;
-        cnt = 0;
-        for(int i=0; i<N; i++){
-            memset(visited[i], 0, sizeof(int)*N);
-        }
     }
     
     cout << result;
+    return 0;
 }
