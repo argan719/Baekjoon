@@ -17,10 +17,9 @@ void input(){
     for(int i=0; i<N; i++){
         cin >> matrix[i];
     }
-    
 }
 
-int bfs(int r, int c, char C){
+int bfs(int r, int c){
     queue<pair<int, int>> q;
     int nr, nc;
     // 단위작업
@@ -38,7 +37,7 @@ int bfs(int r, int c, char C){
             if(nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
             if(v[nr][nc] !=0) continue;
             
-            if(matrix[nr][nc] == C) {
+            if(matrix[nr][nc] == matrix[cur.first][cur.second]) {
                 // 단위작업
                 q.push(make_pair(nr, nc));
                 v[nr][nc] = 1;
@@ -48,25 +47,23 @@ int bfs(int r, int c, char C){
     return 1;
 }
 
-int main(){
-    input();
+int solve(){
     int cnt = 0;
-    
-    for(auto color : {'R', 'G', 'B'}){
-        
-        for(int i=0; i<N; i++){
-            for(int j=0; j<N; j++){
-                if(v[i][j] !=0) continue;
-                if(matrix[i][j] == color) {
-                    bfs(i, j, color);
-                    cnt++;
-                }
-            }
+    for(int i=0; i<N; i++){
+        for(int j=0; j<N; j++){
+            if(v[i][j] !=0) continue;
+            bfs(i, j);
+            cnt++;
         }
     }
-    cout << cnt << " ";
-    // 초기화 작업
-    cnt = 0;
+    return cnt;
+}
+
+int main(){
+    input();
+    
+    cout << solve() << " ";
+
     memset(v, 0, sizeof(v));
     
     // 적록색약을 위해 그냥 원본 'G'를 'R'로 교체
@@ -76,17 +73,6 @@ int main(){
         }
     }
     
-    for(auto color : {'R', 'B'}){
-        for(int i=0; i<N; i++){
-            for(int j=0; j<N; j++){
-                if(v[i][j] !=0) continue;
-                if(matrix[i][j] == color) {
-                    bfs(i, j, color);
-                    cnt++;
-                }
-            }
-        }
-    }
-    cout << cnt;
+    cout << solve();
     return 0;
 }
