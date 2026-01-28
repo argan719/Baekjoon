@@ -1,53 +1,68 @@
-#include <iostream>
-#include <queue>
-#include <tuple>
-using namespace std; 
-int map[50][50]; 
-int check[50][50]; 
-int dx[4] = { 0,0,1,-1 };
-int dy[4] = { 1,-1,0,0 }; 
-int h, w;
-int result = -1; 
-queue <pair<int, int>> q; 
-void bfs() {
-	int x, y, nx, ny;
-	while (q.size()) {
-		tie(y, x) = q.front();
-		q.pop(); 
-		for (int i = 0; i < 4; i++) {
-			nx = x+ dx[i]; 
-			ny = y+ dy[i]; 
-			if (nx < 0 || nx >= w || ny < 0 || ny >= h)continue; //map 범위 넘었을 때
-			if (map[ny][nx] == 0 || check[ny][nx])continue; //바다거나 이미 체크된곳이면
-			check[ny][nx] = check[y][x] + 1;//현지점+1 값을 조건 만족시 상하좌우에 갱신.
-			result = max(check[ny][nx], result); //result 값 비교해서 최댓값이면 갱신.
-			q.push({ ny,nx }); //queue에 다시 집어넣기
-		}
-	}
+#include<iostream>
+#include<cstring>
+#include<algorithm>
+#include<queue>
+#define MAX 51
+using namespace std;
+
+string matrix[MAX];
+int v[MAX][MAX];
+int N, M;
+
+int dr[] = {-1, 1, 0, 0};
+int dc[] = {0, 0, -1, 1};
+
+void input(){
+    cin >> N >> M;
+    for(int i=0; i<N; i++){
+        cin >> matrix[i];
+    }
 }
 
-int main() {
-	cin >> h >> w; 
-	for (int i = 0; i < h; i++) {
-		string s = ""; cin >> s; 
-		for (int j = 0; j < w; j++) {
-			if (s[j] == 'W')map[i][j] = 0; 			
-			else map[i][j] = 1; 			
-		}
-	}
-	for (int i = 0; i < h; i++) {
-		for (int j = 0; j < w; j++) {
-			if (map[i][j] == 1) {
-				check[i][j] = 1; 
-				q.push({ i,j });
-				bfs(); 
-				for (int k = 0; k < h; k++) {
-					for (int z = 0; z < w; z++) {
-						check[k][z] = 0; 
-					}
-				}
-			}
-		}
-	}
-	cout << result-1; 
+int bfs(int r, int c){
+    queue<pair<int,int>> q;
+    int nr,nc;
+    // 단위작업
+    q.push(make_pair(r, c));
+    v[r][c] = 1;
+    
+    auto cur = q.front();
+    while(!q.empty()){
+        cur = q.front();
+        q.pop();
+        // 연결 4방향
+        for(int i=0; i<4; i++){
+            nr = cur.first + dr[i];
+            nc = cur.second + dc[i];
+            // 범위내 미방문 조건(==육지이면) 맞으면
+            if(nr < 0 || nr >= N || nc < 0 || nc >=M) continue;
+            if(v[nr][nc] !=0 ) continue;
+            if(matrix[nr][nc] == 'L'){
+                // 단위작업
+                q.push(make_pair(nr, nc));
+                v[nr][nc] = v[cur.first][cur.second] + 1;
+            }
+        }
+    }
+    return v[cur.first][cur.second] - 1;
+}
+
+int main(){
+    input();
+    
+    int r;
+    int max_val = 0;
+    for(int i=0; i<N; i++){
+        for(int j=0; j<M; j++){
+            if(matrix[i][j] == 'L'){
+                
+                if(i-1 >= 0 && i+1 < N && matrix[i-1][j] == 'L' && matrix[i+1][j] == 'L') continue;
+                if(j-1 >= 0 && j+1 < M && matrix[i][j-1] == 'L' && matrix[i][j+1] == 'L') continue;
+                memset(v, 0, sizeof(v));
+                r = bfs(i, j);
+                if(max_val < r) max_val = r;
+            }
+        }
+    }
+    cout << max_val;
 }
