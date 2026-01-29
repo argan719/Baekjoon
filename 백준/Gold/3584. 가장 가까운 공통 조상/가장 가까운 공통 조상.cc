@@ -72,7 +72,7 @@ int main(){
         memset(v1, 0, sizeof(v1));
         memset(v2, 0, sizeof(v2));
         //memset(adj, 0, sizeof(adj));
-        for(int i=0; i<MAX; i++) adj[i].assign(0,0);
+        for(int i=0; i<MAX; i++) adj[i].clear();
         
         for(int i=0; i<N-1; i++){
             cin >> A >> B;
