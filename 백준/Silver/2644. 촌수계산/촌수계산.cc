@@ -3,61 +3,54 @@
 #include<queue>
 #include<cstring>
 #define MAX 101
-
 using namespace std;
-int n, m;
-int a, b;
-int step;
 
+int N, M;
+int S, E;
 vector<int> adj[MAX];
-int visited[MAX];
+int v[MAX];
 
-// a를 기준으로 b를 찾기
+void input(){
+    int x,y;
+    cin >> N;
+    cin >> S >> E;
+    cin >> M;
+    
+    for(int i=0; i<M; i++){
+        cin >> x >> y;
+        // 양방향으로 구성
+        adj[x].push_back(y);
+        adj[y].push_back(x);
+    }
+}
+
 int bfs(){
     queue<int> q;
-    int len;
-    
-    q.push(a);
-    visited[a] = 1;
+    // 단위작업
+    q.push(S);
+    v[S] = 1;
     
     while(!q.empty()){
-        len = q.size();
+        auto cur = q.front();
+        q.pop();
+        // 정답처리는 이곳에서
+        if(cur == E) return v[cur] - 1;
         
-        // 현재 depth만 돌면서 본인 자식 노드 push 하고 끝나도록 - step++
-        for(int i=0; i<len; i++){
-            int cur = q.front();
-            q.pop();
+        // 연결 범위내 미방문 조건맞으면
+        for(int n : adj[cur]){
+            if(v[n] != 0) continue;
             
-            // 정답 찾으면 바로 리턴.
-            if(cur == b) return step;
-            
-            for(auto n : adj[cur]){
-                if(visited[n]) continue;
-                
-                q.push(n);
-                visited[n] = 1;
-            }
+            //단위작업
+            q.push(n);
+            v[n] = v[cur] + 1;
         }
-        step++;
     }
-    
+    // 촌수 계산 불가
     return -1;
 }
 
 int main(){
-    cin >> n;
-    cin >> a >> b;
-    cin >> m;
-    int x,y;
-    
-    // 양방향 인접행렬 생성
-    for(int i=0;i<m;i++){
-        cin >> x >> y;
-        adj[x].push_back(y);
-        adj[y].push_back(x);
-    }
+    input();
     
     cout << bfs();
-    
-    return 0;
 }
