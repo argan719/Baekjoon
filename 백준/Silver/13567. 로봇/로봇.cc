@@ -5,47 +5,27 @@ using namespace std;
 
 int matrix[MAX][MAX];
 
-int dr[] = {-1, 1, 0, 0};
-int dc[] = {0, 0, -1, 1};
+int dr[] = {-1, 0, 1, 0};
+int dc[] = {0, 1, 0, -1};
 // 상 0
 // 하 1
 // 좌 2
 // 우 3
 
 int M, n;
-int flag = 1;
+int flag = 1; // 초기 방향 동쪽.
 int r,c;
 
-int solve(string command, int d){
-    int nr = 0, nc =0;
-    if(command == "MOVE"){
-        for(int i=0; i<d; i++){
-            nr = r + dr[flag];
-            nc = c + dc[flag];
-            
-            if(nr < 0 || nr > M || nc < 0 || nc > M) return -1;
-            r = nr;
-            c = nc;
-        }
+int solve(string cmd, int d){
+    if(cmd == "MOVE"){
+        r = r + dr[flag] * d;
+        c = c + dc[flag] * d;
         
+        if(r < 0 || r > M || c < 0 || c > M) return -1;
     }
-    else if(command == "TURN"){
-        if(flag == 0){
-            if(d == 0) flag = 2;
-            else flag = 3;
-        }
-        else if(flag == 1){
-            if(d == 0) flag = 3;
-            else flag = 2;
-        }
-        else if(flag == 2){
-            if(d == 0) flag = 1;
-            else flag = 0;
-        }
-        else{
-            if(d == 0) flag = 0;
-            else flag = 1;
-        }
+    else if(cmd == "TURN"){
+        if(d == 0) flag = (flag + 1)%4;
+        else if(d == 1) flag = (flag + 3)%4;
     }
     return 1;
 }
@@ -62,7 +42,7 @@ void input(){
             return;
         }
     }
-    cout << r << " " << c << endl;
+    cout << c << " " << r << endl;
 }
 
 int main(){
