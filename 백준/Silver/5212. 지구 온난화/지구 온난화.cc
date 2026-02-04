@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<vector>
+#include<algorithm>
 #define MAX 12
 using namespace std;
 
@@ -25,18 +26,21 @@ void input(){
     }
 }
 
+
 void solve(){
     int cnt = 0;
+    int r_low = R; int r_high = 1;
+    int c_low = C; int c_high = 1;
     
     for(int i=1; i<=R; i++){
         for(int j=1; j<=C; j++){
             if(matrix[i][j] == 1){
-                
                 for(int k=0; k<4; k++){
                     if(matrix[i + dr[k]][j + dc[k]] == 0) cnt++;
                 }
                 if(cnt >= 3) down.push_back(make_pair(i,j));  //matrix[i][j] = 0;
                 cnt = 0;
+                
             }
         }
     }
@@ -45,46 +49,34 @@ void solve(){
         matrix[cur.first][cur.second] = 0;
     }
     
-    
-    
-    int flag = 0;
-    cnt = 0;
-    int r_low = 1; int r_high = R;
-    int c_low = 1; int c_high = C;
-    
     for(int i=1; i<=R; i++){
         for(int j=1; j<=C; j++){
-            if(matrix[i][j] == 1) { flag = 1; cnt++; break;}
+            if(matrix[i][j] == 1){
+                r_low = min(r_low, i);
+                r_high = max(r_high, i);
+                c_low = min(c_low, j);
+                c_high = max(c_high, j);
+            }
         }
-        if(flag == 1 && cnt == 1) { r_low = i; r_high = i;}
-        else if(flag) r_high = i;
-        flag = 0;
-    }
-    
-    flag = 0;
-    cnt = 0;
-    for(int j=1; j<=C; j++){
-        for(int i=1; i<=R; i++){
-            if(matrix[i][j] == 1) { flag = 1; cnt++; break;}
-        }
-        if(flag == 1 && cnt == 1) {c_low = j; c_high = j;}
-        else if(flag) c_high = j;
-        flag = 0;
     }
     
     
+    // 정답 출력
     for(int i=r_low; i<=r_high; i++){
         for(int j=c_low; j<=c_high; j++){
             if(matrix[i][j] == 0) cout << '.';
             else if(matrix[i][j] == 1) cout << 'X';
         }
-        cout << endl;
+        cout << "\n";
     }
-
 }
 
 
 int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    
     input();
     
     solve();
