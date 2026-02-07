@@ -34,27 +34,26 @@ void solve(){
     int r,c;
     r = SR; c = SC;
     int nr, nc;
-    
-    queue<pair<int,int>> q;
-    q.push(make_pair(SR,SC));
     matrix[SR][SC] = 1;
     
-    while(!q.empty()){
-        q.pop();
+    int cnt = 0;
+    
+    while(1){
         
         for(int i=0; i<4; i++){
             nr = r + dr[m[i]];
             nc = c + dc[m[i]];
             
-            if(nr < 0 || nr >= R || nc < 0 || nc >= C) continue;
-            if(matrix[nr][nc]) continue;
+            if(nr < 0 || nr >= R || nc < 0 || nc >= C) {cnt++; continue;}
+            if(matrix[nr][nc]) {cnt++; continue;}
             
-            q.push(make_pair(nr,nc));
             matrix[nr][nc] = 1;
             r = nr;
             c = nc;
             i--;
+            cnt = 0;
         }
+        if(cnt >= 4) break;  // 동작을 멈춘 경우
     }
     cout << r << " " << c;
     
