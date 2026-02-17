@@ -1,31 +1,28 @@
-#include <iostream>
-#include <cstdlib>
+#include<iostream>
 using namespace std;
 
-int main(void){
-    int A, B, C, D, E;
+int A,B,C,D,E;
+
+void input(){
+    cin >> A >> B >> C >> D >> E;
+}
+
+void solve(){
+    int result = 0;
     
-    cin >> A;
-    cin >> B; 
-    cin >> C; 
-    cin >> D; 
-    cin >> E;
-    
-    int cnt = 0;
-    
-    // 얼어있을 경우
     if(A < 0){
-        cnt += D;
-        cnt += abs(A) * C;
-        cnt += B * E;
-    } // 얼어 있지 않을 경우
-    else if(A > 0) {
-        cnt = (B - A) * E;
+        A = A * -1;
+        result += A * C;
+        result += D;
+        result += B * E;
     }
-    
-    cout << cnt;
-    
-    
-    
-    
+    else{
+        result = (B - A) * E;
+    }
+    cout << result;
+}
+
+int main(){
+    input();
+    solve();
 }
