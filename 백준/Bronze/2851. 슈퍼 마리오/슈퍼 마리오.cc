@@ -1,28 +1,26 @@
 #include<iostream>
-#include<cstdlib>
-#include<climits>
+#include<cmath>
 using namespace std;
 
 int arr[10];
+int sum;
 
-int main(void){
-    
-    int min = INT_MAX;
-    int result = -1;
-    int sum = 0;
-    
+void input(){
     for(int i=0; i<10; i++){
         cin >> arr[i];
     }
-    
+}
 
-    for(int j=0; j<10; j++){
-        sum += arr[j];
-          if(abs(100-sum) <= min){
-              min = abs(100-sum);
-              if(sum >= result)result = sum;
-          }
+void solve(){
+    for(int i=0; i<10; i++){
+        sum += arr[i];
+        if(i == 9) break;
+        if(abs(sum - 100) < abs(sum + arr[i+1] - 100)) break;
     }
-    
-    cout << result;
+    cout << sum;
+}
+
+int main(){
+    input();
+    solve();
 }
