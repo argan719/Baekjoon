@@ -1,55 +1,35 @@
 #include<iostream>
-#include <climits>
-#include <cstring>
-#define MAX 21
 using namespace std;
+int TC;
+int arr[21]; // 1~ 20번 학생
+int num;
 
-int arr[MAX];
-int line[MAX];
-
-int main(void){
-    int P;
-    cin >> P;
-    int T;
+void solve(){
+    int tmp;
     int cnt = 0;
-    int cur_pos;
-    int min = 0;
-   
-    for(int test_case = 1; test_case <= P; test_case++){
-        cin >> T;
-        cnt = 0;
-        min = INT_MAX;
-        memset(line, 0, sizeof(int)*MAX);  
-        memset(arr, 0, sizeof(int)*MAX);
-        // 20명 입력받음
-        for(int i=1; i<=20; i++){
-            cin >> arr[i];
-        }
-        // 맨처음에 첫번째 학생 위치
-        line[1] = arr[1];
-        // 그 다음 학생 올 자리(줄의 맨 뒤)
-        cur_pos = 2;
- 
-        for(int i=2;i<=20; i++){
-            line[cur_pos] = arr[i];
+    for(int i=2; i<=20; i++){
+        for(int j=1; j<=i-1; j++){
+            if(arr[j] <= arr[i]) continue;
             
-            for(int j=1; j<cur_pos; j++){
-                if(arr[i] < line[j]) {
-                    if(min > j) min = j;
-                }
+            tmp = arr[i];
+            for(int k=i-1; k >= j; k--){
+                arr[k+1] = arr[k];
+                cnt++;
             }
-            if(min != INT_MAX) {
-                for(int k=cur_pos-1; min <= k ; k--){
-                     line[k+1] = line[k];
-                     cnt++;
-                 }
-               line[min] = arr[i];
-            }
-            cur_pos++;
-            min = INT_MAX;
+            arr[j] = tmp;
         }
-                
-        cout << T << " " << cnt << endl;
     }
-    
+    cout << num << " " << cnt << endl;
+}
+
+void input(){
+    cin >> TC;
+    for(int t=1; t<=TC; t++){
+        cin >> num;
+        for(int i=1; i<=20; i++) cin >> arr[i];
+        solve();
+    }
+}
+int main(){
+    input();
 }
