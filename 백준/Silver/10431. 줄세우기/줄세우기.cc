@@ -2,7 +2,6 @@
 using namespace std;
 int TC;
 int arr[21]; // 1~ 20번 학생
-int num;
 
 void solve(){
     int tmp;
@@ -10,23 +9,16 @@ void solve(){
     for(int i=2; i<=20; i++){
         for(int j=1; j<=i-1; j++){
             if(arr[j] <= arr[i]) continue;
-            
-            tmp = arr[i];
-            for(int k=i-1; k >= j; k--){
-                arr[k+1] = arr[k];
-                cnt++;
-            }
-            arr[j] = tmp;
+            cnt++;  // 나보다 큰 학생 수만 카운트하면 끝.
         }
     }
-    cout << num << " " << cnt << endl;
+    cout << arr[0] << " " << cnt << endl;
 }
 
 void input(){
     cin >> TC;
     for(int t=1; t<=TC; t++){
-        cin >> num;
-        for(int i=1; i<=20; i++) cin >> arr[i];
+        for(int i=0; i<=20; i++) cin >> arr[i];
         solve();
     }
 }
