@@ -1,3 +1,4 @@
+// 어쨋든 가로 조각 중 가장 긴 가로 * 세로 조각 중 가장 긴 세로가 답이 됨.
 #include<iostream>
 #include<vector>
 #include<algorithm>
@@ -5,49 +6,43 @@
 using namespace std;
 
 int matrix[MAX][MAX];
-int main(void){
-    int w, h;
-    int N;
-    cin >> w >> h;
-    cin >> N;
-    
-    int id, no;
-    int max_w = -1;
-    int max_h = -1;
-    int tmp;
-    int prev = 0;
-    
-    vector<int> row; // 행번호 = 가로 점선
-    vector<int> col; // 열번호 = 세로 점선
-    for(int n=1; n<=N; n++){
-        cin >> id >> no;
-        if(id ==0){//가로로 자르는 점선
-            row.push_back(no);
-        }else{//세로로 자르는 점선
-            col.push_back(no);
-        }
+int N, M;
+int num;
+
+vector<int> row;  // 잘라야 하는 가로 점선들
+vector<int> col;  // 잘라야 하는 세로 점선들
+
+void input(){
+    cin >> M >> N;
+    cin >> num;
+    int type, val;
+    for(int i=0; i<num; i++){
+        cin >> type >> val;
+        if(type == 0) row.push_back(val);
+        else col.push_back(val);
     }
-    row.push_back(h);
-    col.push_back(w);
-    
+}
+void solve(){
+    row.push_back(N); col.push_back(M);
     sort(row.begin(), row.end());
     sort(col.begin(), col.end());
     
-    for(auto cur : row){
-        tmp = cur - prev;
-        prev = cur;
-        if(max_h < tmp) max_h= tmp;
+    int s = 0;
+    int max_row = 1;
+    int max_col = 1;
+    for(auto n : row){
+        max_row = max(max_row, n - s);
+        s = n;
     }
-    //if(max_w < w - prev) max_w = w-prev;
-    
-    prev = 0;
-    for(auto cur : col){
-        tmp = cur - prev;
-        prev = cur;
-        if(max_w < tmp) max_w = tmp;
+    s = 0;  // 초기화!!!!
+    for(auto n : col){
+        max_col = max(max_col, n - s);
+        s = n;
     }
-    //if(max_h < h - prev) max_h = h-prev;
-    
-    cout << max_h * max_w;
-    
+    cout << max_row * max_col;
+}
+
+int main(){
+    input();
+    solve();
 }
