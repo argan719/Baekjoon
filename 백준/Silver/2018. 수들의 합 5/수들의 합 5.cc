@@ -1,23 +1,16 @@
-// "연속된"자연수의 합
-// 덧셈만 가능.
 #include<iostream>
-#define endl "\n"
 using namespace std;
 
 int N;
-int main(void){
+int main(){
     cin >> N;
-    int sum = 1; // N 하나
-  
-    int add = 0;
-    // 더하다가 N를 넘어가면 stop.
-    for(int i=1; i<N; i++){
-        add = i;
-        for(int j=i+1; j<N; j++){
-            add += j;
-            if(add == N) { sum++; break;}
-            if(add > N) break;
-        }
+    int cnt = 0;
+    int sum = 1, s = 1, e = 1;
+    
+    while(e <= N){
+        if(sum == N) {cnt++; sum += ++e;}
+        if(sum < N) sum += ++e;
+        if(sum > N) sum -= s++;
     }
-    cout << sum;
+    cout << cnt;
 }
