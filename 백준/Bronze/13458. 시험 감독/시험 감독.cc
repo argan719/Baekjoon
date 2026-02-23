@@ -7,7 +7,6 @@ int N;
 vector<int> arr;
 int B, C;
 
-
 void input(){
     cin >> N;
     int n;
@@ -22,12 +21,9 @@ void solve(){
     ll sum = 0;
     
     for(auto n : arr){
-        sum++;
+        sum++;  // B에 대한 +1 증가
         if(n <= B) continue;
-        
-        n -= B;
-        sum += n / C;
-        if(n % C !=0) sum++;
+        sum += ((n - B) + (C - 1))/C;
     }
     cout << sum << "\n";
 }
