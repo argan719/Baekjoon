@@ -1,112 +1,94 @@
 #include<iostream>
-#include<vector>
 #include<cstring>
+#include<vector>
 #define MAX 101
+#define DOT 0
+#define STAR 1
 using namespace std;
 
-int N, M;
-string matrix[MAX];
-int matrix2[MAX][MAX];
-int cnt;
+struct pos{
+    int x, y, s;
+};
+
+int matrix[MAX][MAX];
+int v[MAX][MAX];
 
 int dr[] = {-1, 1, 0, 0};
 int dc[] = {0, 0, -1, 1};
 
-int k;
-
-typedef struct cross{
-    int x;
-    int y;
-    int s;
-}cross;
-
-vector<cross> v; // x, y, 값은 십자가의 크기
+int N, M;
+vector<pos> ans;
 
 void input(){
     cin >> N >> M;
+    string row;
     for(int i=0; i<N; i++){
-        cin >> matrix[i];  // 0 ~ N-1 => 1 ~ N 변경필요 주의.
+        cin >> row;
         for(int j=0; j<M; j++){
-            if(matrix[i][j] == '*') cnt++;  // 없애야 하는 *의 수
+            if(row[j] == '.') matrix[i][j] = DOT;  // '.'은 0
+            else if(row[j] == '*') matrix[i][j] = STAR;  // '*'은 1
         }
     }
 }
 
-void check(int r, int c){
-    int nr, nc;
-    int adj = 0;
-    int val = 1;
-    
-            
+// 상하좌우 *인지 탐색
+bool isValid(int r, int c, int size){
     for(int i=0; i<4; i++){
-        nr = r + (val * dr[i]);
-        nc = c + (val * dc[i]);
-        
-        if(nr < 0 || nr >= N || nc < 0 || nc >= M) break;
-        if(matrix[nr][nc] != '*') break;
-            
-        if(matrix[nr][nc] == '*') adj++;
-        
-        if(i == 3) {
-            val++;
-            i = -1;
-        }
+        int nr = r + dr[i] * size, nc = c + dc[i] * size;
+        if(nr < 0 || nr >= N || nc < 0 || nc >= M) return false;
+        if(matrix[nr][nc] == DOT) return false;
     }
-        
-    if(adj >= 4) {
-        v.push_back({r, c, adj/4});
-        //cnt--;
-        //cnt = cnt - (adj/4)*4;
-        k++;
+    return true;
+}
+
+void draw(int r, int c, int size){
+    v[r][c] = STAR;
+    int n = 1;
+    while(n <= size){
+        for(int i=0; i<4; i++){
+            int nr = r + dr[i] * n, nc = c + dc[i] * n;
+            if(nr < 0 || nr >= N || nc < 0 || nc >= M) continue;
+            v[nr][nc] = STAR;
+        }
+        n++;
     }
 }
 
 int solve(){
+    int n = 1;
+    
     for(int i=0; i<N; i++){
         for(int j=0; j<M; j++){
-            if(matrix[i][j] == '*') {
-                check(i, j);
+            if(matrix[i][j] == STAR){
+                n = 1;
+                while(isValid(i, j, n)) n++;
+                if(n != 1) ans.push_back({i, j, n-1});
             }
         }
     }
     
-    int nr, nc;
-    for(auto n : v){
-        matrix2[n.x][n.y] = 1;  // '*'
-        for(int size=1; size<=n.s; size++){
-            for(int i=0; i<4; i++){
-                nr = n.x + dr[i] * size;
-                nc = n.y + dc[i] * size;
-                
-                matrix2[nr][nc] = 1;  // '*'
-            }
-            
-            
-        }
+    for(auto n : ans){
+        draw(n.x, n.y, n.s);
     }
     
     for(int i=0; i<N; i++){
         for(int j=0; j<M; j++){
-            if(matrix[i][j] == '*' && matrix2[i][j] == 0) return -1;
+            if(matrix[i][j] != v[i][j]) return -1;
         }
     }
+    
     return 1;
-    
 }
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
-    
+    ios::sync_with_stdio(false); cin.tie(NULL);
     input();
-    if(cnt == 0) { cout << 0 << endl; return 0; }  // k의 범위가 0부터 가능하므로... -1 이 아니라 k를 0으로 출력해야하는 것.
     int r = solve();
-    if(r == -1) cout << r;
-    else {
-        cout << k << endl;
-        for(auto n : v){
-            cout << n.x + 1 << " " << n.y + 1 << " " << n.s << endl;
+    if(r == 1){
+        cout << ans.size() << "\n";
+        for(auto n : ans){
+            cout << n.x + 1 << " " << n.y + 1 << " " << n.s << "\n";
         }
     }
+    else cout << -1;
 }
