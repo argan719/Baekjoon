@@ -1,40 +1,31 @@
 #include<iostream>
-#define MAX 10
+#define MAX 9
 using namespace std;
 
+int ans[MAX];
+int v[MAX];
 int N;
-int arr[MAX];
-int result[MAX];
-int visited[MAX];
 
-void print(){
-    for(int i=1; i<=N; i++){
-        cout << result[i] << " ";
-    }
-    cout << "\n";
-}
-
-// n: 선택된 숫자 개수
-void dfs(int n, int cur){
-    result[n] = cur;
+void dfs(int n){
+    // 정답처리는 이곳에서
     if(n == N){
-        print();
+        for(int j=0; j<N; j++) cout << ans[j] << " ";
+        cout << "\n";
+        
+        return;
     }
     
-    for(int i=1; i<=N; i++){
-        if(!visited[i]) {
-            visited[i] = 1;
-            dfs(n+1, i);
-            visited[i] = 0;
-        }
+    // 하부 함수 호출
+    for(int j=1; j<=N; j++){
+        if(v[j]) continue;
+        v[j] = 1;
+        ans[n] = j;
+        dfs(n+1);
+        v[j] = 0;
     }
-    
 }
 
-int main(void){
+int main(){
     cin >> N;
-    for(int i=1; i<=N; i++){
-        arr[i] = i;
-    }
-    dfs(0, 1);
+    dfs(0);
 }
