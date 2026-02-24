@@ -7,9 +7,9 @@ int N;
 struct date{
     int t=0, p =0;
 };
+
 date arr[MAX];
 int ans;
-int v[MAX];
 
 void input(){
     cin >> N;
@@ -17,30 +17,23 @@ void input(){
         cin >> arr[j].t >> arr[j].p;
     }
 }
-void dfs(int start, int n, int cost){
+void dfs(int n, int cost){
     // 종료조건은 이곳에서!!
-    if(start <= N){
-        ans = max(ans, cost);
-    }
-    else{
-        cost -= arr[n].p;
+    if(n > N){
         ans = max(ans, cost);
         return;
     }
     
     // 하부함수 호출
-    for(int j=start + 1; j<=N; j++){
-        if(v[j]) continue;
-        //if(j + arr[j].t - 1 > N) continue;
-        v[j] = 1;
-        dfs(j + arr[j].t - 1, j, cost + arr[j].p);
-        v[j] = 0;
-    }
+    // 이번에 선택하는 경우
+    if(n + arr[n].t -1 <= N) dfs(n+arr[n].t, cost + arr[n].p);
+    // 이번에 선택 안 하는 경우 (cost에 영향X)
+    dfs(n+1, cost);
 }
 
 int main(){
     ios::sync_with_stdio(false); cin.tie(NULL);
     input();
-    dfs(0, 0, 0);  // start, n, cost (start가 종료조건)
+    dfs(1, 0);  // n, cost
     cout << ans;
 }
