@@ -60,13 +60,10 @@ int check(){
     return -1;
 }
 
-void dfs(int n, int cnt, int scnt){
-    // 가지치기 추가
-    if(cnt > 7) return;
-    
+void dfs(int n, int start, int scnt){
     // 종료조건은 여기에서
-    if(n == 25){
-        if(cnt == 7 && scnt >=4) {
+    if(n == 7){
+        if(scnt >=4) {
             // BFS로 인접 조건까지 확인 후 정답 계수
             if(check()) ans++;
         }
@@ -74,12 +71,12 @@ void dfs(int n, int cnt, int scnt){
     }
     
     // 하부함수 호출
-    // 포함하는 경우
-    matrix[n/5][n%5] = 1;  // 방문처리 (7공주에 해당 학생이 포함됨 표시)
-    dfs(n+1, cnt+1, scnt+(int)(arr[n/5][n%5] == 'S'));
-    matrix[n/5][n%5] = 0; // 원상복구
-    // 포함하지 않는 경우
-    dfs(n+1, cnt, scnt);
+    for(int j=start; j<25; j++){
+        matrix[j/5][j%5] = 1;  // j를 7공주 중 한 명으로 선택
+        dfs(n+1, j+1, scnt+(int)(arr[j/5][j%5] == 'S'));
+        matrix[j/5][j%5] = 0; // 원상복구
+    }
+    
 }
 
 int main(){
