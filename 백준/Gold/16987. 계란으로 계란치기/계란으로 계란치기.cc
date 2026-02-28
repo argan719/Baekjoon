@@ -41,15 +41,18 @@ void dfs(int n){
         return;
     }
     
-    bool flag = true;
     // 하부함수 호출 (중복가능)
-    for(int j=0; j<N; j++){
-        if(n == j) continue;
-        //if(crack[j]) continue;
-        
-        if(crack[n] == 0 && crack[j] == 0 ) { flag = false; check(n, j);  dfs(n+1);  restore(n, j);}
+    if(crack[n] == 1) dfs(n+1);
+    else{
+        int flag = 0;
+        for(int j=0; j<N; j++){
+            if(n == j) continue;
+            
+            if(crack[j] == 0) { flag = 1; check(n, j);  dfs(n+1);  restore(n, j);}
+        }
+        if(flag == 0) dfs(n+1);
     }
-    if(flag) dfs(n+1);
+    
 }
 
 int main(){
@@ -58,4 +61,3 @@ int main(){
     dfs(0);
     cout << ans;
 }
-
