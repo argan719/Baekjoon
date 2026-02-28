@@ -4,30 +4,28 @@
 #define MAX 5
 using namespace std;
 
-string cmd[MAX];
-char arr[25];
+string arr[MAX];
 
 int matrix[MAX][MAX]; // 7공주로 선택했다면 1로 표시
 int ans;
-int v[MAX][MAX];  // BFS에서 쓰기 위한 visited 배열
+//int v[MAX][MAX];  // BFS에서 쓰기 위한 visited 배열
 int dr[] = {-1, 1, 0, 0};
 int dc[] = {0, 0, -1, 1};
 
 void input(){
     for(int i=0; i<5; i++){
-        cin >> cmd[i];
-    }
-    // 백트래킹을 위한 1차원 배열 생성
-    for(int i=0; i<25; i++){
-        arr[i] = cmd[i/5][i%5];
+        cin >> arr[i];
     }
 }
 
-void bfs(int r, int c){
+int bfs(int r, int c){
     queue<pair<int,int>> q;
+    int v[MAX][MAX] = {0, }; // 0 초기화 필요
+    int cnt = 0;
     // 단위작업
     q.push({r,c});
     v[r][c] = 1;
+    cnt = 1;
     
     while(!q.empty()){
         auto cur = q.front();
@@ -44,26 +42,22 @@ void bfs(int r, int c){
                 // 단위작업
                 q.push({nr, nc});
                 v[nr][nc] = 1;
-            }
-        }
-    }
-}
-
-int check(){
-    int cnt = 0;
-    for(int i=0; i<5; i++){
-        for(int j=0; j<5; j++){
-            if(matrix[i][j] == 1 && v[i][j] == 0) {
-                bfs(i, j);
                 cnt++;
             }
         }
     }
-    return (cnt == 1);
+    return (cnt == 7);
 }
 
-int check_S(int j){
-    return (arr[j] == 'S');
+int check(){
+    for(int i=0; i<5; i++){
+        for(int j=0; j<5; j++){
+            if(matrix[i][j]) {
+                return bfs(i, j);
+            }
+        }
+    }
+    return -1;
 }
 
 void dfs(int n, int cnt, int scnt){
@@ -74,7 +68,6 @@ void dfs(int n, int cnt, int scnt){
     if(n == 25){
         if(cnt == 7 && scnt >=4) {
             // BFS로 인접 조건까지 확인 후 정답 계수
-            memset(v, 0, sizeof(v)); // visited 초기화!
             if(check()) ans++;
         }
         return;
@@ -82,8 +75,8 @@ void dfs(int n, int cnt, int scnt){
     
     // 하부함수 호출
     // 포함하는 경우
-    matrix[n/5][n%5] = 1;  // 방문처리
-    dfs(n+1, cnt+1, scnt+(int)(arr[n] == 'S'));
+    matrix[n/5][n%5] = 1;  // 방문처리 (7공주에 해당 학생이 포함됨 표시)
+    dfs(n+1, cnt+1, scnt+(int)(arr[n/5][n%5] == 'S'));
     matrix[n/5][n%5] = 0; // 원상복구
     // 포함하지 않는 경우
     dfs(n+1, cnt, scnt);
