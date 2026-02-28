@@ -67,6 +67,9 @@ int check_S(int j){
 }
 
 void dfs(int n, int cnt, int scnt){
+    // 가지치기 추가
+    if(cnt > 7) return;
+    
     // 종료조건은 여기에서
     if(n == 25){
         if(cnt == 7 && scnt >=4) {
@@ -82,7 +85,6 @@ void dfs(int n, int cnt, int scnt){
     matrix[n/5][n%5] = 1;  // 방문처리
     dfs(n+1, cnt+1, scnt+(int)(arr[n] == 'S'));
     matrix[n/5][n%5] = 0; // 원상복구
-    
     // 포함하지 않는 경우
     dfs(n+1, cnt, scnt);
 }
