@@ -9,24 +9,12 @@ struct egg{
 };
 
 egg arr[MAX];
-int crack[MAX]; // 깨짐 여부 표시
+//int crack[MAX]; // 깨짐 여부 표시
 int ans = 0;
 
 void input(){
     cin >> N;
     for(int i=0; i<N; i++) cin >> arr[i].s >> arr[i].w;
-}
-
-void check(int n, int target){
-    arr[n].s -= arr[target].w; arr[target].s -= arr[n].w;
-    if(arr[n].s <=0) crack[n] = 1;
-    if(arr[target].s <=0) crack[target] = 1;
-}
-
-void restore(int n, int target){
-    arr[n].s += arr[target].w; arr[target].s += arr[n].w;
-    if(arr[n].s > 0) crack[n] = 0;
-    if(arr[target].s > 0) crack[target] = 0;
 }
 
 void dfs(int n, int cnt){
@@ -37,18 +25,18 @@ void dfs(int n, int cnt){
     }
     
     // 하부함수 호출 (중복가능)
-    if(crack[n] == 1) dfs(n+1, cnt);
+    if(arr[n].s <= 0) dfs(n+1, cnt);
     else{
         int flag = 0;
         for(int j=0; j<N; j++){
-            if(n == j) continue;
+            if(n == j || arr[j].s <=0 ) continue;
             
-            if(crack[j] == 0) {
-                flag = 1;
-                check(n, j);
-                dfs(n+1, cnt+crack[n]+crack[j]);
-                restore(n, j);
-            }
+            flag = 1;
+            arr[n].s -= arr[j].w;
+            arr[j].s -= arr[n].w;
+            dfs(n+1, cnt+(int)(arr[n].s <= 0)+(int)(arr[j].s <= 0));
+            arr[n].s += arr[j].w;
+            arr[j].s += arr[n].w;
         }
         if(flag == 0) dfs(n+1, cnt);
     }
