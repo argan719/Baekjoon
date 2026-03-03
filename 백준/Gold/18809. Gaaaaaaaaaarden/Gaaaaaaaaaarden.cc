@@ -47,38 +47,33 @@ int count(){
             }
         }
     }
-
+    
     while(!q.empty()){
-        int len = q.size();
+        auto [r,c] = q.front();
+        q.pop();
+        int color = tmp[r][c];
         
-        for(int i=0; i<len; i++){
-            auto [r,c] = q.front();
-            q.pop();
-            int color = tmp[r][c];
-            //if(color == 1 || color == 0) continue;
+        // 연결 상하좌우
+        for(int dir=0; dir<4; dir++){
+            int nr = r + dr[dir], nc = c + dc[dir];
+            // 범위내 미방문(카운트) 조건 맞으면
+            if(nr < 0 || nr >= N || nc < 0 || nc >=M) continue;
+            // 미방문
+            if(v[nr][nc] < v[r][c] + 1) continue;
+            // 조건(호수 아님) 맞으면
+            if(tmp[nr][nc] == 0) continue;
             
-            // 연결 상하좌우
-            for(int dir=0; dir<4; dir++){
-                int nr = r + dr[dir], nc = c + dc[dir];
-                // 범위내 미방문(카운트) 조건 맞으면
-                if(nr < 0 || nr >= N || nc < 0 || nc >=M) continue;
-                // 미방문
-                if(v[nr][nc] < v[r][c] + 1) continue;
-                // 조건(호수 아님) 맞으면
-                if(tmp[nr][nc] == 0) continue;
-                            
-                // 꽃이 피어나는 상황
-                if(v[nr][nc] == v[r][c] + 1 && ((tmp[nr][nc] == RED && color == GREEN)  || (tmp[nr][nc] == GREEN && color == RED) )) {
-                    cnt++; tmp[nr][nc] = 0; continue;
-                }
-                
-                if(v[nr][nc] > v[r][c] + 1 && color != 1 && color != 0) {
-                    q.push({nr,nc});
-                    tmp[nr][nc] = color;
-                    v[nr][nc] = v[r][c] + 1;
-                }
-                
+            // 꽃이 피어나는 상황
+            if(v[nr][nc] == v[r][c] + 1 && ((tmp[nr][nc] == RED && color == GREEN)  || (tmp[nr][nc] == GREEN && color == RED) )) {
+                cnt++; tmp[nr][nc] = 0; continue;
             }
+            
+            if(v[nr][nc] > v[r][c] + 1 && color != 1 && color != 0) {
+                q.push({nr,nc});
+                tmp[nr][nc] = color;
+                v[nr][nc] = v[r][c] + 1;
+            }
+            
         }
         
     }
