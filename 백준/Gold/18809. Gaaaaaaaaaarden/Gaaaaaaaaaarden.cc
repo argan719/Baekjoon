@@ -6,12 +6,10 @@
 #define MAX 51
 #define RED 10
 #define GREEN 20
-#define FLOWER INT_MIN
 using namespace std;
 
 int matrix[MAX][MAX];
 int N, M, R, G;
-//int v[MAX][MAX];
 
 struct pos{
     int x, y;
@@ -57,7 +55,7 @@ int count(){
             auto [r,c] = q.front();
             q.pop();
             int color = tmp[r][c];
-            if(color == 1 || color == 0) continue;
+            //if(color == 1 || color == 0) continue;
             
             // 연결 상하좌우
             for(int dir=0; dir<4; dir++){
@@ -70,11 +68,11 @@ int count(){
                 if(tmp[nr][nc] == 0) continue;
                             
                 // 꽃이 피어나는 상황
-                if(v[nr][nc] == v[r][c] + 1 && ((tmp[nr][nc] == RED && color == GREEN) || (tmp[nr][nc] == GREEN && color == RED) )) {
+                if(v[nr][nc] == v[r][c] + 1 && ((tmp[nr][nc] == RED && color == GREEN)  || (tmp[nr][nc] == GREEN && color == RED) )) {
                     cnt++; tmp[nr][nc] = 0; continue;
                 }
                 
-                if(v[nr][nc] > v[r][c] + 1) {
+                if(v[nr][nc] > v[r][c] + 1 && color != 1 && color != 0) {
                     q.push({nr,nc});
                     tmp[nr][nc] = color;
                     v[nr][nc] = v[r][c] + 1;
