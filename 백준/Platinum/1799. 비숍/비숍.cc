@@ -21,9 +21,9 @@ void input(){
 }
 
 void dfs(int n, int cnt){
-    if(ans >= (2*N - 1) - n + cnt) return;
+    //if(ans >= (2*N - 1) - n + cnt) return;
     // 종료조건
-    if(n == 2*N -1){
+    if(n >= 2*N -1){
         if(ans < cnt) ans = cnt;
         return;
     }
@@ -32,17 +32,21 @@ void dfs(int n, int cnt){
     for(auto cur : bishop[n]){
         if(vLeft[cur.first - cur.second + N] == 0) {
             vLeft[cur.first - cur.second + N] = 1;
-            dfs(n+1, cnt+1);
+            dfs(n+2, cnt+1);
             vLeft[cur.first - cur.second + N] = 0;
             flag = 1;
         }
     }
-    if(flag == 0) dfs(n+1, cnt);
+    if(flag == 0) dfs(n+2, cnt);
 }
 
 int main(){
     ios::sync_with_stdio(false); cin.tie(0);
     input();
     dfs(0, 0);
-    cout << ans;
+    int result = ans;
+    ans = 0;
+    dfs(1, 0);
+    result += ans;
+    cout << result;
 }
