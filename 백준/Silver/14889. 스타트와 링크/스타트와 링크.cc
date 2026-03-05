@@ -37,7 +37,7 @@ int calc(){
 
 void dfs(int n, int scnt, int lcnt){
     // 가지치기
-    if(scnt > M || lcnt > M ) return;
+    //if(scnt > M || lcnt > M ) return;
     
     if(n == N+1){
         // 정답처리
