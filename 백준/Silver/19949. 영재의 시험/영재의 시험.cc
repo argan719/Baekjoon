@@ -1,4 +1,3 @@
-// 2. 점수 처리하며 가는 방법
 #include<iostream>
 #define MAX 11
 using namespace std;
@@ -12,6 +11,9 @@ void input(){
 }
 
 void dfs(int n, int pprev, int prev, int score){
+    // 가지치기
+    if(11 - n + score < 5) return;
+    
     // 종료조건
     if(n == 11){
         // 정답처리
@@ -22,9 +24,7 @@ void dfs(int n, int pprev, int prev, int score){
     for(int j=1; j<=5; j++){
         if(pprev == prev && prev == j) continue;  // 3연속 제외
 
-        // 정답을 맞춘 경우
-        if(j == arr[n]) dfs(n+1, prev, j, score+1);
-        else dfs(n+1, prev, j, score);
+        dfs(n+1, prev, j, score+(int)(j == arr[n]));
     }
 }
 
