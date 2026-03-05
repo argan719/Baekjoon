@@ -8,7 +8,9 @@ int N;
 int M;
 int matrix[MAX][MAX];
 int ans = INT_MAX;
-int v[MAX];  // 1이면 스타트팀, 2이면 링크팀
+
+int startT[MAX];
+int linkT[MAX];
 
 void input(){
     cin >> N;
@@ -20,21 +22,14 @@ void input(){
 }
 
 int calc(){
-    vector<int> startT; // 스타트팀
-    vector<int> linkT;  // 링크팀
-    
-    for(int i=1; i<=N; i++){
-        if(v[i] == 1) startT.push_back(i);
-        else if(v[i] == 2) linkT.push_back(i);
-    }
-    
+
     int ssum = 0, lsum = 0;
-    for(int i=0; i<startT.size(); i++)
-        for(int j=i+1; j<startT.size(); j++)
+    for(int i=1; i<=M; i++)
+        for(int j=i+1; j<=M; j++)
             ssum += matrix[startT[i]][startT[j]] + matrix[startT[j]][startT[i]];
     
-    for(int i=0; i<linkT.size(); i++)
-        for(int j=i+1; j<linkT.size(); j++)
+    for(int i=1; i<=M; i++)
+        for(int j=i+1; j<=M; j++)
             lsum += matrix[linkT[i]][linkT[j]] + matrix[linkT[j]][linkT[i]];
     
     return abs(ssum - lsum);
@@ -54,13 +49,11 @@ void dfs(int n, int scnt, int lcnt){
     }
     
     // s팀 가는 경우
-    v[n] = 1;
+    startT[scnt+1] = n;
     dfs(n+1, scnt+1, lcnt);
-    v[n] = 0;
     // l팀 가는 경우
-    v[n] = 2;
+    linkT[lcnt+1] = n;
     dfs(n+1, scnt, lcnt+1);
-    v[n] = 0;
 }
 
 int main(){
