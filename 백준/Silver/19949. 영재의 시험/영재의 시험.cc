@@ -1,0 +1,38 @@
+// 1. 종료조건에서 처리하는 방법
+#include<iostream>
+#define MAX 11
+using namespace std;
+
+int arr[MAX]; // 문제의 정답
+int ans[MAX];
+int cnt; // 정답이 되는 경우의 수
+
+void input(){
+    for(int i=1; i<=10; i++) cin >> arr[i];  // 1~10문제
+}
+
+void dfs(int n, int pprev, int prev){
+    if(n == 11){
+        // 정답처리
+        int score = 0;
+        for(int i=1; i<=10; i++){
+            if(ans[i] == arr[i]) score++;
+            //if(score >= 5) { cnt++; break;}
+        }
+        if(score >= 5) cnt++;
+        return;
+    }
+    // 하부 함수 호출 - 5지선다
+    for(int j=1; j<=5; j++){
+        if(pprev == prev && prev == j) continue;  // 3연속 제외
+        ans[n] = j;
+        dfs(n+1, prev, j);
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(0);
+    input();
+    dfs(1, 0, 0);
+    cout << cnt;
+}
