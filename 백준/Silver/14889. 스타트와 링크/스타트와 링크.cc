@@ -25,13 +25,10 @@ int calc(){
 
     int ssum = 0, lsum = 0;
     for(int i=1; i<=M; i++)
-        for(int j=i+1; j<=M; j++)
+        for(int j=i+1; j<=M; j++) {
             ssum += matrix[startT[i]][startT[j]] + matrix[startT[j]][startT[i]];
-    
-    for(int i=1; i<=M; i++)
-        for(int j=i+1; j<=M; j++)
             lsum += matrix[linkT[i]][linkT[j]] + matrix[linkT[j]][linkT[i]];
-    
+        }
     return abs(ssum - lsum);
 }
 
