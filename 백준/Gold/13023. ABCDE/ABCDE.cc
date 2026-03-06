@@ -25,7 +25,7 @@ void dfs(int n, int prev){
         cout << 1; exit(0);
     }
     
-    for(auto j : adj[prev]){
+    for(int j : adj[prev]){
         if(v[j]) continue;
         v[j] = 1;
         dfs(n+1, j);
