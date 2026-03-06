@@ -1,6 +1,6 @@
 #include<iostream>
 #include<vector>
-#include<cstdlib>
+//#include<cstdlib>
 #define MAX 2001
 using namespace std;
 int N, M;
