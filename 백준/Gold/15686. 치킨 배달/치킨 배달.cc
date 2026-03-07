@@ -48,7 +48,7 @@ void dfs(int n, int cnt){
     
     if(n == chicken.size()){
         // 정답처리
-        check();
+        if(cnt == M) check();
         return;
     }
     
