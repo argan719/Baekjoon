@@ -7,11 +7,13 @@ using namespace std;
 int N, M;
 int matrix[MAX][MAX];
 int v[15];
-//int s[15];
-int ans = 1e5; // 최솟값
+int s[15];
+int ans = 100 * 2 * 50; // 최솟값
 
 vector<pair<int, int>> chicken;
 vector<pair<int, int>> house;
+
+int CCNT;
 
 void input(){
     cin >> N >> M;
@@ -22,19 +24,17 @@ void input(){
             else if(matrix[i][j] == 2) chicken.push_back({i,j});
         }
     }
+    CCNT = chicken.size();
 }
 
 void check(){
     int dist = 0;
     int min_dist = 100;
     int sum = 0;
-    
     for(auto h : house){
         min_dist = 100;
-        
-        for(int i=0; i<chicken.size(); i++){
-            if(v[i] == 0) continue;
-            dist = abs(h.first - chicken[i].first) + abs(h.second - chicken[i].second);
+        for(int i=0; i<M; i++){
+            dist = abs(h.first - chicken[s[i]].first) + abs(h.second - chicken[s[i]].second);
             min_dist = min(min_dist, dist);
         }
         sum += min_dist;
@@ -42,22 +42,17 @@ void check(){
     ans = min(ans, sum);
 }
 
-void dfs(int n, int cnt){
-    // 가지치기
-    if(cnt > M) return;
-    
-    if(n == chicken.size()){
+void dfs(int n, int start){
+    if(n == M){
         // 정답처리
-        if(cnt == M) check();
+        check();
         return;
     }
     
-    // 해당 치킨집을 채택하는 경우
-    v[n] = 1;
-    dfs(n+1, cnt+1);
-    v[n] = 0;
-    // 해당 치킨집을 채택하지 않는 경우
-    dfs(n+1, cnt);
+    for(int j=start; j<CCNT; j++){
+        s[n] = j;  // 선택한 치킨집 인덱스
+        dfs(n+1, j+1);
+    }
 }
 
 int main(){
