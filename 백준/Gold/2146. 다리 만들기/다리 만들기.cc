@@ -2,6 +2,7 @@
 #include<queue>
 #include<vector>
 #include<cstring>
+#include<algorithm>
 #define MAX 105
 using namespace std;
 int N;
@@ -44,7 +45,7 @@ void bfs_numbering(int i, int j, int val){
     }
 }
 
-void bfs(int val){
+int bfs(int val){
     memset(v, 0, sizeof(v));
     memset(vv, 0, sizeof(vv));
     queue<pair<int,int>> q;
@@ -66,10 +67,10 @@ void bfs(int val){
         auto cur = q.front();
         q.pop();
         
-        // 정답처리 => 최솟값 갱신
-        if(matrix[cur.first][cur.second] != val && matrix[cur.first][cur.second] != 0){
-            if(ans > v[cur.first][cur.second]) ans = v[cur.first][cur.second];
-        }
+//        // 정답처리 => 최솟값 갱신
+//        if(matrix[cur.first][cur.second] != val && matrix[cur.first][cur.second] != 0){
+//            if(ans > v[cur.first][cur.second]) ans = v[cur.first][cur.second];
+//        }
         
         // 연결 4방향
         for(int dir=0; dir<4; dir++){
@@ -77,13 +78,18 @@ void bfs(int val){
             if(matrix[nr][nc] < 0) continue;  // 범위내
             if(vv[nr][nc] == 1) continue;
             
+            if(matrix[nr][nc] != val && matrix[nr][nc] != 0){
+                return v[cur.first][cur.second] + 1;
+            }
+            
             // 단위작업
             q.push({nr,nc});
             v[nr][nc] = v[cur.first][cur.second] + 1;
             vv[nr][nc] = 1;
         }
     }
-    
+    // 이곳에 올일은 없지만..
+    return -1e8;
 }
 
 
@@ -101,7 +107,7 @@ void solve(){
 
     // [2] 최솟값 구하기
     for(int val = 1; val < cnt; val++){
-        bfs(val);
+        ans = min(ans, bfs(val));
     }
     cout << ans << "\n";
 }
