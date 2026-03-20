@@ -1,103 +1,109 @@
 #include<iostream>
 #include<queue>
-#include<algorithm>
+#include<vector>
 #include<cstring>
-#define MAX 101
+#define MAX 105
 using namespace std;
-
 int N;
-int matrix[MAX][MAX];
+int matrix[MAX][MAX]; // -1으로 패딩
 int v[MAX][MAX];
-int ans = 1000;
+int vv[MAX][MAX];
 
 int dr[] = {-1, 1, 0, 0};
 int dc[] = {0, 0, -1, 1};
+int ans = 300;
 
 void input(){
     cin >> N;
-    for(int i=0; i<N; i++){
-        for(int j=0; j<N; j++){
+    memset(matrix, -1, sizeof(matrix));
+    for(int i=1; i<=N; i++){
+        for(int j=1; j<=N; j++){
             cin >> matrix[i][j];
         }
     }
 }
-
-void bfs(int i, int j, int cnt){
-    queue<pair<int, int>> q;
+void bfs_numbering(int i, int j, int val){
+    queue<pair<int,int>> q;
     q.push({i,j});
     v[i][j] = 1;
-    matrix[i][j] = cnt;
+    matrix[i][j] = val;
     
     while(!q.empty()){
-        auto [r,c] = q.front();
+        auto cur = q.front();
         q.pop();
         
         for(int dir=0; dir<4; dir++){
-            int nr = r + dr[dir]; int nc = c + dc[dir];
-            if(nr < 0 || nr >= N || nc < 0 || nc >=N) continue;
-            if(v[nr][nc] || matrix[nr][nc] == 0) continue;
-            
-            q.push({nr, nc});
-            v[nr][nc] = 1;
-            matrix[nr][nc] = cnt;
+            int nr =  cur.first + dr[dir]; int nc = cur.second + dc[dir];
+            if(v[nr][nc]) continue;
+            if(matrix[nr][nc] == 1) {
+                q.push({nr,nc});
+                v[nr][nc] = 1;
+                matrix[nr][nc] = val;
+            }
         }
     }
-    
 }
 
-int get_bridge(int cnt){
+void bfs(int val){
+    memset(v, 0, sizeof(v));
+    memset(vv, 0, sizeof(vv));
     queue<pair<int,int>> q;
-    memset(v, -1, sizeof(v));
+    //int ans_min = 300;
     
-    // 해당 cnt인 섬들의 좌표를 모두 push
-    for(int i=0; i<N; i++){
-        for(int j=0; j<N; j++){
-            if(matrix[i][j] == cnt) {
+    // 우선 해당번호에 해당하면 전부 push
+    for(int i=1; i<=N; i++){
+        for(int j=1; j<=N; j++){
+            if(matrix[i][j] == val) {
                 q.push({i,j});
-                v[i][j] = 0;
+                v[i][j] = -1;
+                vv[i][j] = 1;  // 진짜 방문처리 용도
             }
         }
     }
     
+    // 다리 놓기
     while(!q.empty()){
-        auto [r,c] = q.front();
+        auto cur = q.front();
         q.pop();
         
+        // 정답처리 => 최솟값 갱신
+        if(matrix[cur.first][cur.second] != val && matrix[cur.first][cur.second] != 0){
+            if(ans > v[cur.first][cur.second]) ans = v[cur.first][cur.second];
+        }
+        
+        // 연결 4방향
         for(int dir=0; dir<4; dir++){
-            int nr = r + dr[dir]; int nc = c + dc[dir];
-            if(nr < 0 || nr >= N || nc < 0 || nc >=N) continue;
-            //if(v[nr][nc]) continue;
+            int nr = cur.first + dr[dir]; int nc = cur.second + dc[dir];
+            if(matrix[nr][nc] < 0) continue;  // 범위내
+            if(vv[nr][nc] == 1) continue;
             
-            if(matrix[nr][nc] !=0 && matrix[nr][nc] != cnt){
-                return v[r][c];
-            }
-            
-            if(matrix[nr][nc] == 0 && v[nr][nc] == -1){
-                v[nr][nc] = v[r][c] + 1;
-                q.push({nr,nc});
-            }
+            // 단위작업
+            q.push({nr,nc});
+            v[nr][nc] = v[cur.first][cur.second] + 1;
+            vv[nr][nc] = 1;
         }
     }
-    // 이곳에 올일은 없지만..
-    return 1e9;
+    
 }
 
 
 void solve(){
+    // [1] 단지번호 매기기
     int cnt = 1;
-    for(int i=0; i<N; i++){
-        for(int j=0; j<N; j++){
-            if(v[i][j] == 0 && matrix[i][j] == 1){
-                bfs(i, j, cnt++);
-            }
+    for(int i=1; i<=N; i++){
+        for(int j=1; j<=N; j++){
+            if(v[i][j] == 1) continue;
+            if(matrix[i][j] == 0) continue;
+            
+            bfs_numbering(i, j, cnt++);
         }
     }
-    
-    for(int i=1; i<cnt; i++){
-        //cout << endl << get_bridge(i) << endl;
-        ans = min(ans, get_bridge(i));
+
+    // [2] 최솟값 구하기
+    for(int val = 1; val < cnt; val++){
+        bfs(val);
     }
-    cout << ans;
+    cout << ans << "\n";
 }
 
 int main(){
