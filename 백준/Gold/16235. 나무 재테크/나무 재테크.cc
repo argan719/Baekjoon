@@ -1,5 +1,6 @@
 #include<iostream>
 #include<vector>
+#include<deque>
 #include<cstring>
 #include<algorithm>
 #define MAX 11
@@ -16,7 +17,7 @@ struct Tree{
 };
 
 //vector<vector<int>> tree(MAX, vector<int>(MAX,0));
-vector<int> tree[MAX][MAX];
+deque<int> tree[MAX][MAX];
 vector<Tree> die;
 vector<pair<int,int>> new_tree;
 
@@ -26,17 +27,6 @@ int dc[] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
 int ans;
 
-//bool comp(Tree a, Tree b){
-//    if(a.r != b.r) return a.r < b.r;
-//    
-//    if(a.c != b.c) return a.c < b.c;
-//    
-//    return a.age < b.age;
-//}
-
-bool comp(int a, int b){
-    return a < b;
-}
 
 void input(){
     Tree tmp;
@@ -65,20 +55,21 @@ void solve(){
                 if(tree[i][j].size() == 0) continue;
                 
                 sort(tree[i][j].begin(), tree[i][j].end());
+                int n = tree[i][j].size();
                 
                 sum = 0;
-                for(int k=0; k<tree[i][j].size();){
-                    if(matrix[i][j] < tree[i][j][k]) {
-                        sum += tree[i][j][k]/2;
-                        tree[i][j].erase(tree[i][j].begin() + k);
+                for(int k=0; k<n; k++){
+                    int cur = tree[i][j].front();
+                    
+                    if(matrix[i][j] < cur) {
+                        sum += cur/2;
                     }
                     else{
-                        matrix[i][j] -= tree[i][j][k];
-                        tree[i][j][k]++;
-                        if(tree[i][j][k] % 5 == 0) new_tree.push_back({i, j});
-                        k++;
+                        matrix[i][j] -= cur;
+                        tree[i][j].push_back(cur + 1);
+                        if((cur +1) % 5 == 0) new_tree.push_back({i, j});
                     }
-                    
+                    tree[i][j].pop_front();
                 }
                 matrix[i][j] += sum;
             }
@@ -87,8 +78,6 @@ void solve(){
        
         // 가을
         for(auto cur : new_tree){
-            //if(cur.age % 5 !=0) continue;
-            
             // 인접 8칸에 대해 번식 수행 & 범위내
             for(int dir=0; dir<8; dir++){
                 int nr = cur.first + dr[dir]; int nc = cur.second + dc[dir];
@@ -124,3 +113,4 @@ int main(void){
     input();
     solve();
 }
+
