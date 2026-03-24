@@ -13,9 +13,11 @@ int v[MAX][MAX];
 int ans;
 
 // 주사위 전개도 회전
-int left_right[2][2];
-int up_down[2][2];
-int dice[4][3]; // 전개도 전체.
+//int left_right[2][2];
+//int up_down[2][2];
+//int dice[4][3]; // 전개도 전체.
+
+int d1,d2,d3,d4,d5,d6;
 
 // 북 동 남 서 (상 우 하 좌)
 int dr[] = {-1, 0, 1, 0};
@@ -34,107 +36,33 @@ void input(){
     cr = 1; cc = 1;
     d = 1;
     
-    left_right[0][0] = 4;
-    left_right[0][1] = 1;
-    left_right[1][0] = 6; // 아랫면
-    left_right[1][1] = 3;
-    
-    up_down[0][0] = 2;
-    up_down[0][1] = 1;
-    up_down[1][0] = 6; // 아랫면
-    up_down[1][1] = 5;
-    
-    dice[0][1] = 2;
-    dice[1][0] = 4; dice[1][1] = 1; dice[1][2] = 3;
-    dice[2][1] = 5;
-    dice[3][1] = 6;
+    d1 = 1; d2 = 2; d3 = 3; d4 = 4; d5 = 5; d6 = 6;
 }
 
 int change_dice(){
-    int tmp[2][2];
-    memset(tmp, 0, sizeof(tmp));
+//    int tmp[2][2];
+//    memset(tmp, 0, sizeof(tmp));
+    int t1 = d1; int t2 = d2; int t3 = d3; int t4=d4; int t5 = d5; int t6 = d6;
     
     // 방금 한 이동이 북쪽인 경우
     if (d == 0){
-        // updown 반시계 회전
-        for(int i=0; i<2; i++){
-            for(int j=0; j<2; j++){
-                tmp[i][j] = up_down[j][2 - 1 - i];
-            }
-        }
-        
-        for(int i=0; i<2; i++){
-            for(int j=0; j<2; j++){
-                up_down[i][j] = tmp[i][j];
-            }
-        }
-        
+        t2 = d1; t1 = d5; t5 = t6; t6 = d2;
     }
     else if(d == 1){ // 동쪽인 경우
-        // leftright 시계 회전
-        for(int i=0; i<2; i++){
-            for(int j=0; j<2; j++){
-                tmp[i][j] = left_right[2 - 1 - j][i];
-            }
-        }
-        
-        for(int i=0; i<2; i++){
-            for(int j=0; j<2; j++){
-                left_right[i][j] = tmp[i][j];
-            }
-        }
+        t6 = d3; t3 = d1; t1 = d4; t4 = d6;
     }
     else if(d == 2){ // 남쪽인 경우
-        // updown 시계 회전
-        for(int i=0; i<2; i++){
-            for(int j=0; j<2; j++){
-                tmp[i][j] = up_down[2 - 1 - j][i];
-            }
-        }
-        
-        for(int i=0; i<2; i++){
-            for(int j=0; j<2; j++){
-                up_down[i][j] = tmp[i][j];
-            }
-        }
+        t1 = d2; t5 = d1; t6 = d5; t2 = d6;
     }
     else if(d == 3){ // 서쪽인 경우
-        // leftright 반시계 회전
-        for(int i=0; i<2; i++){
-            for(int j=0; j<2; j++){
-                tmp[i][j] = left_right[j][2 - 1 - i];
-            }
-        }
-        
-        for(int i=0; i<2; i++){
-            for(int j=0; j<2; j++){
-                left_right[i][j] = tmp[i][j];
-            }
-        }
+        t4 = d1; t1 = d3; t3 = d6; t6 = d4;
     }
     
-    if(d == 1 || d == 3){
-        dice[1][0] = left_right[0][0];
-        dice[1][1] = left_right[0][1];
-        dice[3][1] = left_right[1][0];
-        dice[1][2] = left_right[1][1];
-        
-        up_down[0][1] = dice[1][1];
-        up_down[1][0] = dice[3][1];
-    }
-    else{
-        dice[0][1] = up_down[0][0];
-        dice[1][1] = up_down[0][1];
-        dice[3][1] = up_down[1][0];
-        dice[2][1] = up_down[1][1];
-        
-        left_right[0][1] = dice[1][1];
-        left_right[1][0] = dice[3][1];
-    }
+    d1 = t1; d2 = t2; d3 = t3; d4 = t4; d5 = t5; d6 = t6;
     
-    
-    if(up_down[1][0] != left_right[1][0]) return -1;
-    else return dice[3][1];  // 주사위 아랫면 숫자 반환
+    return d6;
+//    if(up_down[1][0] != left_right[1][0]) return -1;
+//    else return dice[3][1];  // 주사위 아랫면 숫자 반환
 }
 
 void bfs(){
