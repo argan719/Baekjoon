@@ -19,14 +19,14 @@ void input(){
 }
 void dfs(int n, int cost){
     // 종료조건은 이곳에서!!
-    if(n > N){
+    if(n >= N+1){
         ans = max(ans, cost);
         return;
     }
     
     // 하부함수 호출
     // 이번에 선택하는 경우
-    if(n + arr[n].t -1 <= N) dfs(n+arr[n].t, cost + arr[n].p);
+    if(n + arr[n].t <= N+1) dfs(n + arr[n].t, cost + arr[n].p);
     // 이번에 선택 안 하는 경우 (cost에 영향X)
     dfs(n+1, cost);
 }
