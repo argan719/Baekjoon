@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<vector>
+#include<algorithm>
 #define MAX 50
 using namespace std;
 
@@ -26,10 +27,10 @@ struct Pos{
 };
 vector<Pos> pos;
 
-struct Marble{
-    int r, c;
-    int num; // 해당 구슬의 번호.
-};
+//struct Marble{
+//    int r, c;
+//    int num; // 해당 구슬의 번호.
+//};
 
 //int ans1, ans2, ans3;
 int ans[4]; // 폭발한 1번, 2번, 3번 구슬 개수
@@ -64,119 +65,92 @@ void input(){
         if(r == 0 && c == 0) break;
     }
     
-//    for(auto n : pos){
-//        cout << n.r << " " << n.c << "\n";
-//    }
 }
 
 
 void solve(){
-    vector<Marble> marble;
-    vector<Marble> tmp;
-    
+    vector<int> marble;
+    vector<int> new_marble;
+    vector<int> transform;
     
     for(int m=0; m<magic.size(); m++){
         // [1] 파괴 - 블리자드 마법 시전
-        for(int s=1; s<=magic[m].s; s++){
-            int nr = cr + dr[magic[m].d] * s;
-            int nc = cc + dc[magic[m].d] * s;
+        for(int mul=1; mul<=magic[m].s; mul++){
+            int nr = cr + dr[magic[m].d] * mul;
+            int nc = cc + dc[magic[m].d] * mul;
             
             if(nr < 0 || nr >= N || nc < 0 || nc >=N) continue;
             matrix[nr][nc] = 0;
         }
-
-        // [2] 이동
-        // [3] 폭발 - 폭발한 구슬 종류 및 개수 카운트 필요.
+        
+        // pos 순서로 matrix를 돌면서 0이 아닌 구슬들만 모은다.
+        for(auto n : pos){
+            if(matrix[n.r][n.c] > 0) marble.push_back(matrix[n.r][n.c]);
+        }
+        
+        // [2] - [3] 이동과 폭발 반복.
+        // marble을 가지고 4개 연속 확인 후
+        // explode에 4개 연속을 전부 지운 구슬들을 넣고 그걸 다시 marble에 넣고 .. 반복.
+        int flag = 0;
         while(1){
-            marble.clear();
-            tmp.clear();
+            // 맨 마지막에 패딩으로 -1을 넣어준다.
+            marble.push_back(-1);
+            new_marble.clear();
+            flag = 0;
             
-            // 0이 아닌 좌표들을 전부 marble에 담기.
-            for(auto cur : pos){
-                if(matrix[cur.r][cur.c] != 0) marble.push_back({cur.r, cur.c, matrix[cur.r][cur.c]});
-            }
-            
-            // 구슬들을 돌면서 4개 이상 연속할 때 matrix를 0으로 만들기.
-            Marble start;
-            int flag = 0;
-            // 전부 0이라면?? marble에 하나도 안 담긴다면. 구슬이 하나도 없는 경우이므로 그대로 종료해도 무방.
-            if(marble.size() == 0) return;
-            start = marble[0];
-            //tmp.push_back(start);
-            int same = 0;
-            
-            for(auto cur : marble){
-                if(cur.num == start.num){
-                    same++;
-                    tmp.push_back(cur);
+            int s = 0; int e = 0;
+            while(s < marble.size() - 1){
+                e = s + 1;
+                while(marble[s] == marble[e]){
+                    e++;
                 }
-                else{
-                    if(same >=4){
-                        flag = 1;
-                        for(auto n : tmp) {
-                            ans[matrix[n.r][n.c]]++;
-                            matrix[n.r][n.c] = 0;
-                        }
+                if(e - s >= 4) {
+                    flag = 1;
+                    // 정답처리
+                    for(int i=s; i<e; i++) {
+                        ans[marble[i]]++;
                     }
-                    same = 1;
-                    start = cur;
-                    tmp.clear();
-                    tmp.push_back(start);
                 }
-            }
-            if(same >=4){
-                flag = 1;
-                for(auto n : tmp) {
-                    ans[matrix[n.r][n.c]]++;
-                    matrix[n.r][n.c] = 0;
+                else if(e - s < 4){
+                    for(int i=s; i<e; i++) new_marble.push_back(marble[i]);
                 }
+                s = e;
             }
-            tmp.clear();
+            marble.clear();  // -1이 있으므로 걍 클리어 후 새로 대입.
+            marble = new_marble;
+            //marble.push_back(-1);
+            //new_marble.clear();  // 이것도 반드시 클리어 필요.
+            
+            //cout << flag << "\n";
+            // 4개 연속이 없었다면 더 이상 반복하지 않으므로 탈출.
             if(flag == 0) break;
         }
         
-        marble.clear();
-        // 0이 아닌 좌표들을 전부 marble에 담기.
-        for(auto cur : pos){
-            if(matrix[cur.r][cur.c] != 0) marble.push_back({cur.r, cur.c, matrix[cur.r][cur.c]});
-        }
-        // 전부 0이라면?? marble에 하나도 안 담긴다면. 구슬이 하나도 없는 경우이므로 그대로 종료해도 무방.
-        if(marble.size() == 0) return;
-        
         // [4] 변화
+        // marble을 가지고 A, B를 구해서 matrix를 새롭게 만들어야 하는 것
+        marble.push_back(-1);
+        
+        int s = 0; int e = 0;
+        while(s < marble.size() - 1){
+            e = s + 1;
+            while(marble[s] == marble[e]){
+                e++;
+            }
+            transform.push_back(e-s);  // A삽입
+            transform.push_back(marble[s]); // B삽입
+            s = e;
+        }
+        
+        while(transform.size() < pos.size()){
+            transform.push_back(0);  // 0으로 동일하게 채워줘서 pos 기준으로 matrix에 채워넣기.
+        }
+        
         memset(matrix, 0, sizeof(matrix));
-        Marble start;
-        start = marble[0];
-        int same = 0;
-        int idx = 0;
-        for(auto cur : marble){
-            if(cur.num == start.num){
-                same++;
-            }
-            else{
-                if(idx >= pos.size()) break;
-                matrix[pos[idx].r][pos[idx].c] = same; idx++;
-                if(idx >= pos.size()) break;
-                matrix[pos[idx].r][pos[idx].c] = start.num; idx++;
-                //cout <<  "start.num " << start.num << "\n";
-                same = 1;
-                start = cur;
-            }
+        for(int i=0; i<pos.size(); i++){
+            matrix[pos[i].r][pos[i].c] = transform[i];
         }
-        if(idx < pos.size()){
-            matrix[pos[idx].r][pos[idx].c] = same;
-            idx++;
-            if(idx < pos.size()) matrix[pos[idx].r][pos[idx].c] = start.num;
-        }
-        
-//        cout << "TRANSFORM" << endl;
-//        for(int i=0; i<N; i++){
-//            for(int j=0; j<N;j++){
-//                cout << matrix[i][j] <<  " ";
-//            }
-//            cout << "\n";
-//        }
-        
+        transform.clear();
+        marble.clear();
     }
     
     
