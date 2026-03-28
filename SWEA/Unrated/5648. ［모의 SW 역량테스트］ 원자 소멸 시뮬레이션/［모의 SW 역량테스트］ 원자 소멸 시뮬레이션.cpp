@@ -1,87 +1,83 @@
 #include<iostream>
-#include<cstring>
 #include<vector>
+#include<cstring>
 #include<set>
-#include<algorithm>
+#define MAX 4001
 using namespace std;
 
-int TC, N;
-struct atom{
-    int j, i;
-    int k, d;
-};
-
-vector<atom> units;
-int v[4100][4100];
-int del[4100][4100];
+int N, TC;
+int v[MAX][MAX];
+int d[MAX][MAX];
 long long TURN;
-// 상하좌우
+
+struct ATOM{
+    int x, y;
+    int d;
+    int k;
+};
+vector<ATOM> units;
+
+//set<pair<int,int>> del;
+
+// 상 하 좌 우
 int dr[] = {1, -1, 0, 0};
 int dc[] = {0, 0, -1, 1};
+
 int ans;
 
 void solve(){
+    //memset(v, 0, sizeof(v));
+    //del.clear();
     
     for(int k=1; k<=4000; k++){
-        //memset(del, 0, sizeof(del));
-        //memset(v, 0, sizeof(v));
         TURN++;
         
-        // 모든 원소 (0.5*2)씩 이동
-        for(auto& cur : units){
-            //cout << "이동전 " << cur.j << " " << cur.i << endl;
-            cur.j += dc[cur.d];
-            cur.i += dr[cur.d];
-            //cout << "이동후 " << cur.j << " " << cur.i << endl;
+        for(int i=0; i<units.size(); ){
+            units[i].x += dc[units[i].d];
+            units[i].y += dr[units[i].d];
+            
+            if(units[i].x < 0 || units[i].x > 4000 || units[i].y < 0 || units[i].y > 4000) units.erase(units.begin() + i);
+            
+            else i++;
         }
         
-        int tmp_j, tmp_i;
         for(auto cur : units){
-            if(cur.j < 0 || cur.j > 4000 || cur.i < 0 || cur.i > 4000) continue;
-            if(v[cur.j][cur.i] == TURN){
-                //del.insert({cur.j, cur.i});
-                del[cur.j][cur.i] = TURN;
-                //del.push_back({cur.j, cur.i});
+            if(v[cur.x][cur.y] == TURN){
+                //cout << "del " << endl;
+                //del.insert({cur.x, cur.y});
+                d[cur.x][cur.y] = TURN;
             }
-            //cout << cur.j << " " << cur.i << "\n";
-            else v[cur.j][cur.i] = TURN;
+            else v[cur.x][cur.y] = TURN;
         }
         
         for(int i=0; i<units.size();){
-            if(units[i].j < 0 || units[i].j > 4000 || units[i].i < 0 || units[i].i > 4000){
-                units.erase(units.begin() + i);
-            }
-            else if(del[units[i].j][units[i].i] == TURN) {
-                //cout << "ans " << ans << "\n";
+            if(d[units[i].x][units[i].y] == TURN){
+                //cout << "ans : " << ans << "\n";
                 ans += units[i].k;
                 units.erase(units.begin() + i);
             }
             else i++;
         }
+        
     }
-    
 }
 
 void input(){
     cin >> TC;
-    atom tmp;
-    
+    ATOM tmp;
     for(int tc=1; tc<=TC; tc++){
         cin >> N;
         units.clear();
-        //memset(v, 0, sizeof(v));
-        //memset(del, 0, sizeof(del));
-        ans = 0;
-        
         for(int i=0; i<N; i++){
-            cin >> tmp.j >> tmp.i >> tmp.d >> tmp.k;
-            tmp.j += 1000; tmp.i += 1000;
-            tmp.j *= 2; tmp.i *= 2;   // 0 ~ 4000
+            cin >> tmp.x >> tmp.y >> tmp.d >> tmp.k;
+            // 0부터 4000까지
+            //tmp.x += 1000; tmp.y += 1000;
+            tmp.x *= 2; tmp.y *= 2;
+            tmp.x += 2000; tmp.y += 2000;
             units.push_back(tmp);
         }
-        
+        ans = 0;
         solve();
-        
         cout << "#" << tc << " " << ans << "\n";
     }
 }
@@ -89,4 +85,5 @@ void input(){
 int main(){
     ios::sync_with_stdio(false); cin.tie(0);
     input();
+    //solve();
 }
