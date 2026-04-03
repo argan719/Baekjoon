@@ -1,30 +1,41 @@
 #include<iostream>
-#include<stdio.h>
-#include<algorithm> 
+#include<algorithm>
 #include<vector>
 using namespace std;
+typedef long long ll;
 
-int main(void) {
-	int n;
-	cin >> n;
-	int i;
-	int s, e;
+int N;
+int cnt;
+vector<pair<ll, ll>> arr;
 
-	vector<pair<int, int>> vec;
+bool comp(pair<ll, ll> a, pair<ll, ll> b){
+    if(a.second != b.second) return a.second < b.second;
+    return a.first < b.first;
+}
 
-	for (i = 0; i < n; i++) {
-		scanf("%d %d", &s,  &e);
-		vec.push_back(make_pair(e, s));
-	}
-	sort(vec.begin(), vec.end());
+void input(){
+    int s, e;
+    cin >> N;
+    for(int i=0; i<N; i++){
+        cin >> s >> e;
+        arr.push_back({s,e});
+    }
+    sort(arr.begin(), arr.end(), comp);  // 정렬
+}
 
-	i = vec[0].first;
-	int room = 1;
-	for (int j = 1; j < n; j++) {
-		if (vec[j].second >= i) {
-			room++;
-			i = vec[j].first;
-		}
-	}
-	cout << room;
+void solve(){
+    ll end = 0;
+    for(auto cur : arr){
+        if(end <= cur.first) {
+            end = cur.second;
+            cnt++;
+        }
+    }
+    cout << cnt;
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(0);
+    input();
+    solve();
 }
