@@ -1,39 +1,34 @@
 #include<iostream>
-#include<algorithm>
-#define MAX 20
+#define MAX 16
 using namespace std;
 
+int arr[MAX][MAX]; // Ti Pi
 int N;
-struct date{
-    int t=0, p =0;
-};
-
-date arr[MAX];
 int ans;
 
 void input(){
     cin >> N;
-    for(int j=1; j<=N; j++){
-        cin >> arr[j].t >> arr[j].p;
+    for(int i=1; i<=N; i++){
+        cin >> arr[i][0] >> arr[i][1];
     }
 }
-void dfs(int n, int cost){
-    // 종료조건은 이곳에서!!
-    if(n >= N+1){
-        ans = max(ans, cost);
+
+void dfs(int n, int start, int sum){
+    // 종료조건은 이곳에서
+    if(n > N){
+        // 정답처리
+        if(ans < sum) ans = sum;
         return;
     }
     
     // 하부함수 호출
-    // 이번에 선택하는 경우
-    if(n + arr[n].t <= N+1) dfs(n + arr[n].t, cost + arr[n].p);
-    // 이번에 선택 안 하는 경우 (cost에 영향X)
-    dfs(n+1, cost);
+    if(start <= n && n + arr[n][0] <= N+1) dfs(n+1, n + arr[n][0], sum + arr[n][1]);
+    dfs(n+1, start, sum);
 }
 
 int main(){
-    ios::sync_with_stdio(false); cin.tie(NULL);
+    ios::sync_with_stdio(false); cin.tie(0);
     input();
-    dfs(1, 0);  // n, cost
+    dfs(1, 0, 0);
     cout << ans;
 }
