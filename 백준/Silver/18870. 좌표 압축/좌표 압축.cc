@@ -1,13 +1,13 @@
 #include<algorithm>
 #include<iostream>
-#include<set>
+//#include<set>
 #include<vector>
 using namespace std;
 
 int N;
 vector<int> arr;
 vector<int> nums;
-set<int> s;
+//set<int> s;
 vector<int> ans;
 
 void input(){
@@ -20,9 +20,9 @@ void input(){
 }
 
 void solve(){
-    
-    set<int> s(arr.begin(), arr.end());
-    nums.assign(s.begin(), s.end());
+    nums = arr;
+    sort(nums.begin(), nums.end());
+    nums.erase(unique(nums.begin(), nums.end()), nums.end());
     
     for(auto target : arr){
         auto low = lower_bound(nums.begin(), nums.end(), target);
