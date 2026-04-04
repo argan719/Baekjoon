@@ -1,8 +1,8 @@
 #include<iostream>
+#include<algorithm>
 #include<queue>
 #include<cstring>
 #include<vector>
-#include<algorithm>
 #define MAX 21
 using namespace std;
 
@@ -17,133 +17,98 @@ struct Shark{
 };
 Shark shark;
 
-struct Fish{
-    int r, c;
-    int size;
+struct pos{
+    int r,c;
 };
-//vector<Fish> fish;
-int fish_cnt;
+vector<pos> fish;
 
-int tr, tc;
+int dr[] = {-1, 1, 0, 0};
+int dc[] = {0, 0, -1, 1};
 
-// 상 좌 우 하
-int dr[] = {-1, 0, 0, 1};
-int dc[] = {0, -1, 1, 0};
+int ans;
 
-bool comp(pair<int,int> a, pair<int,int> b){
-    if(a.first != b.first) return a.first < b.first;
-    
-    return a.second < b.second;
+bool comp(pos a, pos b){
+    if(a.r != b.r) return a.r < b.r;
+    return a.c < b.c;
 }
 
 void input(){
     cin >> N;
-    for(int i=1; i<=N; i++){
-        for(int j=1; j<=N; j++){
+    for(int i=0; i<N; i++){
+        for(int j=0; j<N; j++){
             cin >> matrix[i][j];
-            if(matrix[i][j] == 9) {
-                shark.r = i; shark.c = j; shark.size = 2; shark.cnt = 0;
-                // clear 해주기!!!
+            if(matrix[i][j] == 9){
                 matrix[i][j] = 0;
-            }
-            else if(matrix[i][j] !=0){
-                fish_cnt++;
+                shark.r = i; shark.c = j; shark.size = 2; shark.cnt = 0;
             }
         }
     }
 }
 
 int bfs(){
+    fish.clear();
     memset(v, 0, sizeof(v));
-    queue<pair<int,int>> q;
-    vector<pair<int, int>> tmp;
-    //int min_r = 100; int min_c = 100;
-    //int step = 1000;
-    //int flag = 0;
-    int min_step = 0;
-    // 단위작업.
+    
+    queue<pos> q;
     q.push({shark.r, shark.c});
-    v[shark.r][shark.c] = 1;  // -1 한 걸 리턴해줘야 step이 됨.
+    v[shark.r][shark.c] = 1;
+    int flag = 0;
+    int step = 0;
     
     while(!q.empty()){
-        auto cur = q.front();
-        q.pop();
+        int len = q.size();
         
-        // 정답처리는 이곳에서
-        if(matrix[cur.first][cur.second] != 0 && matrix[cur.first][cur.second] < shark.size){
-            if(min_step == 0){
-                min_step = v[cur.first][cur.second] - 1;
-                tmp.push_back(cur);
-            }
-            else{
-                if(min_step == v[cur.first][cur.second] - 1) tmp.push_back(cur);
-            }
-            //tmp.push_back(cur);
-            //tr = cur.first; tc = cur.second;
-            //step = min(step, v[cur.first][cur.second] - 1);
-            //return v[cur.first][cur.second] - 1;
-        }
-        
-        // 연결 4방향
-        for(int dir=0; dir<4; dir++){
-            int nr = cur.first + dr[dir]; int nc = cur.second + dc[dir];
-            if(nr < 1 || nr > N || nc < 1 || nc > N) continue;
-            if(v[nr][nc] !=0) continue;
+        for(int i=0; i<len; i++){
+            auto cur = q.front();
+            q.pop();
             
-            // 못 지나가는 조건
-            if(shark.size < matrix[nr][nc]) continue;
+            // 정답 처리는 이곳에서
+            if(matrix[cur.r][cur.c] !=0 && matrix[cur.r][cur.c] < shark.size) {
+                flag = 1;
+                fish.push_back({cur.r, cur.c});
+            }
             
-            q.push({nr,nc});
-            v[nr][nc] = v[cur.first][cur.second] + 1;
+            for(int dir=0; dir<4; dir++){
+                int nr = cur.r + dr[dir]; int nc = cur.c + dc[dir];
+                if(nr < 0 || nr >= N || nc < 0 || nc >= N) continue;
+                if(v[nr][nc] !=0) continue;
+                
+                if(matrix[nr][nc] > shark.size) continue;
+                q.push({nr,nc});
+                v[nr][nc] = 1;
+            }
         }
+        if(flag == 1) return step;
+        step++;
     }
-    if(tmp.size() == 0) return -1;
-    
-    sort(tmp.begin(), tmp.end(), comp);
-    tr = tmp[0].first; tc = tmp[0].second;
-    
-    return v[tmp[0].first][tmp[0].second] - 1;
+    //cout << "step : " << step << endl;
+    return -1;
 }
 
 void solve(){
-    int ans = 0;
-    while(ans >=0){
-        // [0] 종료 조건 확인
-        if(fish_cnt == 0) break;
-        int cnt = 0;
-        for(int i=1; i<=N; i++){
-            for(int j=1; j<=N; j++){
-                if(matrix[i][j] !=0 && matrix[i][j] < shark.size) cnt++;
-            }
-        }
-        if(cnt == 0) break;
-        
-        // [1] 먹을 수 있는 물고기를 나랑 가까운 곳부터 찾고 - BFS
-        tr = 0; tc = 0;
+    
+    while(1){
+        // [1] BFS - 이동할 곳 선정
         int step = bfs();
-        // 탐색을 했는데 조건에 맞는게 없어서 이동하지 못했다면 종료 (범위 1~N)
         if(step == -1) break;
+        if(fish.size() == 0) break;  // 더 이상 먹을 수 있는 물고기가 공간에 없는 경우.
         
-        // [2] bfs를 통해 얻은 tr, tc로 step초가 걸려서 아기 상어 이동
-        shark.r = tr; shark.c = tc;
-        shark.cnt++;
-        fish_cnt--;
-        // 자신의 크기와 같은 수의 물고기를 먹을 때마다 크기 1증가 - 이부분 조금 모호함. 디버깅 확인 필요.
-        if(shark.cnt == shark.size){
-            shark.size++;
-            shark.cnt = 0;  // 이걸 clear해주는게 맞는지 아닌지.
-        }
-        //cout << "잡아먹은 물고기 좌표 : " << tr << " " << tc << "\n";
-        //cout << "이번에 이동한 step : " << step << "\n";
-        //cout << "그리고 나서 상어 현재 크기 : " << shark.size << "\n";
-        // 물고기 자리 clear
-        matrix[tr][tc] = 0;
-        // time + (이동한 거리 만큼)
         ans += step;
+
+        sort(fish.begin(), fish.end(), comp);
+        // 선정한 곳으로 이동 및 정답처리
+        shark.r = fish[0].r;
+        shark.c = fish[0].c;
+        matrix[shark.r][shark.c] = 0;
+        
+        shark.cnt++;
+        if(shark.cnt == shark.size){
+            shark.cnt = 0;
+            shark.size++;
+        }
+        
     }
-    
-    cout << ans << "\n";
-    
+    cout << ans;
 }
 
 int main(){
