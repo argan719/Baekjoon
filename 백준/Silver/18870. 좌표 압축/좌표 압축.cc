@@ -1,32 +1,37 @@
-// 자기보다 작은 게 몇개인지 카운트하면 됨.
-#include<bits/stdc++.h>
+#include<algorithm>
+#include<iostream>
+#include<set>
+#include<vector>
 using namespace std;
 
-int main(void){
-    int N;
-    cin >> N;
-    vector<int> vec1;
-    vector<int> vec2;
-    map<int, int> result;
-    
-    int x;
-    for(int i=0;i<N;i++){
-        cin >> x;
-        vec1.push_back(x);
-        vec2.push_back(x);
-    }
-    sort(vec2.begin(), vec2.end());  // 오름차순 정렬
-    
-    int idx = 0;
-    for(int i=0;i<vec2.size();i++){
-        auto it = result.find(vec2[i]);
-        if(it == result.end()){
-            result.insert(make_pair(vec2[i], idx++));
-        }  // 정렬된 값들을 <값, 인덱스>로 insert 
-    }
+int N;
+vector<int> arr;
+vector<int> nums;
+set<int> s;
+vector<int> ans;
 
-    for(int i=0;i<vec1.size();i++){
-        auto it = result.find(vec1[i]);
-        cout << it->second << " ";
+void input(){
+    cin >> N;
+    int num;
+    for(int i=1; i<=N; i++) {
+        cin >> num;
+        arr.push_back(num);
     }
+}
+
+void solve(){
+    
+    set<int> s(arr.begin(), arr.end());
+    nums.assign(s.begin(), s.end());
+    
+    for(auto target : arr){
+        auto low = lower_bound(nums.begin(), nums.end(), target);
+        cout << low - nums.begin() << " ";
+    }
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(0);
+    input();
+    solve();
 }
